@@ -11,7 +11,7 @@
 
 **Ctrl+7** - Переключить песню на паузу/возобновить
 
-**Ctrl+6** - Переключить песню вперёд
+**Ctrl+8** - Переключить песню вперёд
 
 ```Часы:```
 **F4** - Пауза/продолжить секундомер
@@ -34,7 +34,7 @@
 
 **Ctrl+7** - Switch the song to pause/resume
 
-**Ctrl+6** - Switch the song forward
+**Ctrl+8** - Switch the song forward
 
 ``Часы:``
 
