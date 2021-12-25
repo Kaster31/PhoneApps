@@ -16,7 +16,7 @@
 ### How to use:
 ```/app``` - Open the main menu 
 
-```Музыка:```
+```Музыка:```\n
 Ctrl+6 - Switch the song back
 Ctrl+7 - Switch the song to pause/resume
 Ctrl+6 - Switch the song forward
