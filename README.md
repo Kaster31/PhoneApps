@@ -5,7 +5,9 @@
 
 ``Музыка:``
 Ctrl+6 - Переключить песню назад
+
 Ctrl+7 - Переключить песню на паузу/возобновить
+
 Ctrl+6 - Переключить песню вперёд
 
 ``Часы:``
@@ -18,9 +20,12 @@ F5 - Сброс секундомера
 
 ``Музыка:``
 Ctrl+6 - Switch the song back
+
 Ctrl+7 - Switch the song to pause/resume
+
 Ctrl+6 - Switch the song forward
 
 ``Часы:``
 F4 - Pause/continue stopwatch
+
 F5 - Reset the stopwatch
