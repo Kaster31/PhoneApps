@@ -21,6 +21,6 @@ Ctrl+6 - Switch the song back
 Ctrl+7 - Switch the song to pause/resume
 Ctrl+6 - Switch the song forward
 
-``Часы:`` 
+``Часы:
 **F4** - Pause/continue stopwatch
-**F5** - Reset the stopwatch
+**F5** - Reset the stopwatch``
