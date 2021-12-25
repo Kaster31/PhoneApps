@@ -18,6 +18,10 @@
 
 **F5** - Сброс секундомера
 
+### Установка Audio:
+
+Переходим в каталог: moonloader/config/PhoneApps/Music и добавляем сюда mp3 файлы.
+
 ## Language: EN
 ### How to use:
 **/app** - Open the main menu 
@@ -37,3 +41,7 @@
 **F4** - Pause/continue stopwatch
 
 **F5** - Reset the stopwatch
+
+### Installing Audio:
+
+Go to the directory: boot loader/config/Phone Apps/Music and add mp3 files here.
