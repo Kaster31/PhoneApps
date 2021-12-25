@@ -14,16 +14,13 @@
 
 ## Language: EN
 ### How to use:
-```/app``` - Open the main menu
+```/app``` - Open the main menu 
 
-``Музыка:``
-``Ctrl+6`` - Switch the song back
+```Музыка:```
+Ctrl+6 - Switch the song back
+Ctrl+7 - Switch the song to pause/resume
+Ctrl+6 - Switch the song forward
 
-``Ctrl+7`` - Switch the song to pause/resume
-
-``Ctrl+6`` - Switch the song forward
-
-``Часы:``
-``F4`` - Pause/continue stopwatch
-
-``F5`` - Reset the stopwatch
+``Часы:`` 
+F4 - Pause/continue stopwatch
+F5 - Reset the stopwatch
