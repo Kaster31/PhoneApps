@@ -20,7 +20,7 @@
 
 ## Language: EN
 ### How to use:
-**app** - Open the main menu 
+**/app** - Open the main menu 
 
 **L** - Enable/Disable the Imgui cursor
 
