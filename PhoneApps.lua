@@ -1,92 +1,90 @@
--- [ Описание Скрипта ]
+-- [ РћРїРёСЃР°РЅРёРµ РЎРєСЂРёРїС‚Р° ]
 script_authors('Leon')
 script_version('1.0')
 script_version_number(1)
--- [ Библиотеки ]
+-- [ Р‘РёР±Р»РёРѕС‚РµРєРё ]
 require ('lib.moonloader')
 local as_action = require('moonloader').audiostream_state
 local as_status = require('moonloader').audiostream_status
 local res, notf = pcall(import, 'imgui_notf.lua')
-assert(res, 'PA: Нет библиотеки imgui_notf.lua')
+assert(res, 'PA: РќРµС‚ Р±РёР±Р»РёРѕС‚РµРєРё imgui_notf.lua')
 local res, imadd = pcall(require, 'imgui_addons')
-assert(res, 'PA: Нет библиотеки imgui_addons')
+assert(res, 'PA: РќРµС‚ Р±РёР±Р»РёРѕС‚РµРєРё imgui_addons')
 local res, sampev = pcall(require, 'lib.samp.events')
-assert(res, 'PA: Нет библиотеки lib.samp.events')
+assert(res, 'PA: РќРµС‚ Р±РёР±Р»РёРѕС‚РµРєРё lib.samp.events')
 local res, imgui = pcall(require, 'imgui')
-assert(res, 'PA: Нет библиотеки imgui')
+assert(res, 'PA: РќРµС‚ Р±РёР±Р»РёРѕС‚РµРєРё imgui')
 local res, memory = pcall(require, 'memory')
-assert(res, 'PA: Нет библиотеки memory')
+assert(res, 'PA: РќРµС‚ Р±РёР±Р»РёРѕС‚РµРєРё memory')
 local res, vkeys = pcall(require, 'vkeys')
-assert(res, 'PA: Нет библиотеки vkeys')
+assert(res, 'PA: РќРµС‚ Р±РёР±Р»РёРѕС‚РµРєРё vkeys')
 local res, rkeys = pcall(require, 'lib.rkeys')
-assert(res, 'PA: Нет библиотеки RKeys')
+assert(res, 'PA: РќРµС‚ Р±РёР±Р»РёРѕС‚РµРєРё RKeys')
 local res, folder = pcall(require, 'folder')
-assert(res, 'PA: Нет библиотеки folder')
-local res, socket = pcall(require, 'socket') 
-assert(res, 'PA: Нет библиотеки socket')
+assert(res, 'PA: РќРµС‚ Р±РёР±Р»РёРѕС‚РµРєРё folder')
 local res, encoding = pcall(require, 'encoding')
-assert(res, 'PA: Нет библиотеки encoding')
+assert(res, 'PA: РќРµС‚ Р±РёР±Р»РёРѕС‚РµРєРё encoding')
 encoding.default = 'CP1251'
 u8 = encoding.UTF8
--- [ Переменные ]
+-- [ РџРµСЂРµРјРµРЅРЅС‹Рµ ]
 local variables = {
-    ['imgui'] = {                                                                                                           -- Imgui переменные:
-        ['MainWindow'] = imgui.ImBool(false),                                                                                   -- Главное окно Imgui
-        ['Alarm'] = imgui.ImBool(false),                                                                                        -- Окно Будильника
-        ['AddAlarm'] = imgui.ImBool(false),                                                                                     -- Окно Будильника [Добавление]
-        ['Timer'] = imgui.ImBool(false),                                                                                        -- Окно Таймера
-        ['StopWatch'] = imgui.ImBool(false),                                                                                    -- Окно секундомера
-        ['Gallery'] = imgui.ImBool(false),                                                                                      -- Окно Галереи
-        ['Music'] = imgui.ImBool(false),                                                                                        -- Окно музыки
-        ['EditNote'] = imgui.ImBool(false),                                                                                     -- Редактирование заметок окно Imgui
-        ['EditMusic'] = imgui.ImBool(false),                                                                                    -- Редактирование плейлистов окно Imgui
-        ['AddToPlaylist'] = imgui.ImBool(false),                                                                                -- Добавление трека в плейлист
-        ['Text'] = imgui.ImBuffer('', 1000),                                                                                    -- Редактируемый текст записки календаря
-        ['WindowSize'] = { ['x'] = 800, ['y'] = 440 },                                                                          -- Размеры окна Imgui [X, Y]
-        ['ChangeMonth'] = imgui.ImInt(os.date('%m')),                                                                           -- Текущий месяц в календаре
-        ['ChangeYear'] = imgui.ImInt(os.date('%Y')),                                                                            -- Текущий год в календаре
-        ['CalendarBtnSize'] = { ['x'] = 70, ['y'] = 20 },                                                                       -- Размеры кнопок календаря
-        ['SelectedDate'] = nil,                                                                                                 -- Выбранная дата для изменения
-        ['CalculatorText'] = imgui.ImBuffer('', 1000),                                                                          -- Редактируемый текст калькулятора
-        ['Hour'] = imgui.ImInt(1),                                                                                              -- Выбранный час для будильника
-        ['Minute'] = imgui.ImInt(1),                                                                                            -- Выбранная минута для будильника
+    ['imgui'] = {                                                                                                           -- Imgui РїРµСЂРµРјРµРЅРЅС‹Рµ:
+        ['MainWindow'] = imgui.ImBool(false),                                                                                   -- Р“Р»Р°РІРЅРѕРµ РѕРєРЅРѕ Imgui
+        ['Alarm'] = imgui.ImBool(false),                                                                                        -- РћРєРЅРѕ Р‘СѓРґРёР»СЊРЅРёРєР°
+        ['AddAlarm'] = imgui.ImBool(false),                                                                                     -- РћРєРЅРѕ Р‘СѓРґРёР»СЊРЅРёРєР° [Р”РѕР±Р°РІР»РµРЅРёРµ]
+        ['Timer'] = imgui.ImBool(false),                                                                                        -- РћРєРЅРѕ РўР°Р№РјРµСЂР°
+        ['StopWatch'] = imgui.ImBool(false),                                                                                    -- РћРєРЅРѕ СЃРµРєСѓРЅРґРѕРјРµСЂР°
+        ['Gallery'] = imgui.ImBool(false),                                                                                      -- РћРєРЅРѕ Р“Р°Р»РµСЂРµРё
+        ['Music'] = imgui.ImBool(false),                                                                                        -- РћРєРЅРѕ РјСѓР·С‹РєРё
+        ['EditNote'] = imgui.ImBool(false),                                                                                     -- Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РјРµС‚РѕРє РѕРєРЅРѕ Imgui
+        ['EditMusic'] = imgui.ImBool(false),                                                                                    -- Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РїР»РµР№Р»РёСЃС‚РѕРІ РѕРєРЅРѕ Imgui
+        ['AddToPlaylist'] = imgui.ImBool(false),                                                                                -- Р”РѕР±Р°РІР»РµРЅРёРµ С‚СЂРµРєР° РІ РїР»РµР№Р»РёСЃС‚
+        ['Text'] = imgui.ImBuffer('', 1000),                                                                                    -- Р РµРґР°РєС‚РёСЂСѓРµРјС‹Р№ С‚РµРєСЃС‚ Р·Р°РїРёСЃРєРё РєР°Р»РµРЅРґР°СЂСЏ
+        ['WindowSize'] = { ['x'] = 800, ['y'] = 440 },                                                                          -- Р Р°Р·РјРµСЂС‹ РѕРєРЅР° Imgui [X, Y]
+        ['ChangeMonth'] = imgui.ImInt(os.date('%m')),                                                                           -- РўРµРєСѓС‰РёР№ РјРµСЃСЏС† РІ РєР°Р»РµРЅРґР°СЂРµ
+        ['ChangeYear'] = imgui.ImInt(os.date('%Y')),                                                                            -- РўРµРєСѓС‰РёР№ РіРѕРґ РІ РєР°Р»РµРЅРґР°СЂРµ
+        ['CalendarBtnSize'] = { ['x'] = 70, ['y'] = 20 },                                                                       -- Р Р°Р·РјРµСЂС‹ РєРЅРѕРїРѕРє РєР°Р»РµРЅРґР°СЂСЏ
+        ['SelectedDate'] = nil,                                                                                                 -- Р’С‹Р±СЂР°РЅРЅР°СЏ РґР°С‚Р° РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ
+        ['CalculatorText'] = imgui.ImBuffer('', 1000),                                                                          -- Р РµРґР°РєС‚РёСЂСѓРµРјС‹Р№ С‚РµРєСЃС‚ РєР°Р»СЊРєСѓР»СЏС‚РѕСЂР°
+        ['Hour'] = imgui.ImInt(1),                                                                                              -- Р’С‹Р±СЂР°РЅРЅС‹Р№ С‡Р°СЃ РґР»СЏ Р±СѓРґРёР»СЊРЅРёРєР°
+        ['Minute'] = imgui.ImInt(1),                                                                                            -- Р’С‹Р±СЂР°РЅРЅР°СЏ РјРёРЅСѓС‚Р° РґР»СЏ Р±СѓРґРёР»СЊРЅРёРєР°
     },
-    ['other'] = {                                                                                                           -- Другие переменные:
-        ['Screen_X'] = nil,                                                                                                     -- Размер монитора X
-        ['Screen_Y'] = nil                                                                                                      -- Размер монитора Y
+    ['other'] = {                                                                                                           -- Р”СЂСѓРіРёРµ РїРµСЂРµРјРµРЅРЅС‹Рµ:
+        ['Screen_X'] = nil,                                                                                                     -- Р Р°Р·РјРµСЂ РјРѕРЅРёС‚РѕСЂР° X
+        ['Screen_Y'] = nil                                                                                                      -- Р Р°Р·РјРµСЂ РјРѕРЅРёС‚РѕСЂР° Y
     }
 }
 local ScreenFile = {}
-local Navigate = {                                                                                                          -- Навигация Imgui [Разделы]:
-    ['name'] = '{008000}Phone Apps',                                                                                            -- Имя окна                                                                                          
-    ['selected'] = 'Информация',                                                                                                -- Выбранное окно [Стандарт: Информация]
-    ['buttons'] = {                                                                                                             -- Кнопки:
-        {'Информация'},                                                                                                             -- Раздел Информации
-        {'Календарь'},                                                                                                              -- Раздел Календаря
-        {'Калькулятор'},                                                                                                            -- Раздел Калькулятора
-        {'Музыка'},                                                                                                                 -- Раздел Музыки
-        {'Часы'},                                                                                                                   -- Раздел Часов
-        {'Галерея'}                                                                                                                 -- Раздел Галереи
+local Navigate = {                                                                                                          -- РќР°РІРёРіР°С†РёСЏ Imgui [Р Р°Р·РґРµР»С‹]:
+    ['name'] = '{008000}Phone Apps',                                                                                            -- РРјСЏ РѕРєРЅР°                                                                                          
+    ['selected'] = 'РРЅС„РѕСЂРјР°С†РёСЏ',                                                                                                -- Р’С‹Р±СЂР°РЅРЅРѕРµ РѕРєРЅРѕ [РЎС‚Р°РЅРґР°СЂС‚: РРЅС„РѕСЂРјР°С†РёСЏ]
+    ['buttons'] = {                                                                                                             -- РљРЅРѕРїРєРё:
+        {'РРЅС„РѕСЂРјР°С†РёСЏ'},                                                                                                             -- Р Р°Р·РґРµР» РРЅС„РѕСЂРјР°С†РёРё
+        {'РљР°Р»РµРЅРґР°СЂСЊ'},                                                                                                              -- Р Р°Р·РґРµР» РљР°Р»РµРЅРґР°СЂСЏ
+        {'РљР°Р»СЊРєСѓР»СЏС‚РѕСЂ'},                                                                                                            -- Р Р°Р·РґРµР» РљР°Р»СЊРєСѓР»СЏС‚РѕСЂР°
+        {'РњСѓР·С‹РєР°'},                                                                                                                 -- Р Р°Р·РґРµР» РњСѓР·С‹РєРё
+        {'Р§Р°СЃС‹'},                                                                                                                   -- Р Р°Р·РґРµР» Р§Р°СЃРѕРІ
+        {'Р“Р°Р»РµСЂРµСЏ'}                                                                                                                 -- Р Р°Р·РґРµР» Р“Р°Р»РµСЂРµРё
     }
 }
 local StopWatchVariables = {
-    ['timertime'] = 0,                                  -- Время начала
-    ['reservetime'] = 0,                                -- Время паузы
-    ['paused'] = false,                                 -- Пауза ли
-    ['enabled'] = false,                                -- Включен ли
-    ['Text'] = imgui.ImBuffer('00:00:00.00',100),       -- Текст
-    ['logs'] = {}                                       -- Список кругов
+    ['timertime'] = 0,                                  -- Р’СЂРµРјСЏ РЅР°С‡Р°Р»Р°
+    ['reservetime'] = 0,                                -- Р’СЂРµРјСЏ РїР°СѓР·С‹
+    ['paused'] = false,                                 -- РџР°СѓР·Р° Р»Рё
+    ['enabled'] = false,                                -- Р’РєР»СЋС‡РµРЅ Р»Рё
+    ['Text'] = imgui.ImBuffer('00:00:00.00',100),       -- РўРµРєСЃС‚
+    ['logs'] = {}                                       -- РЎРїРёСЃРѕРє РєСЂСѓРіРѕРІ
 }
 local ActiveDays = 
 {
     ['name'] = {
-        'ПН',
-        'ВТ',
-        'СР',
-        'ЧТ',
-        'ПТ',
-        'СБ',
-        'ВС'
+        'РџРќ',
+        'Р’Рў',
+        'РЎР ',
+        'Р§Рў',
+        'РџРў',
+        'РЎР‘',
+        'Р’РЎ'
     },
     ['imgui'] = {
         imgui.ImBool(false),
@@ -98,16 +96,16 @@ local ActiveDays =
         imgui.ImBool(false)
     }
 }
--- // Получение скриншотов
+-- // РџРѕР»СѓС‡РµРЅРёРµ СЃРєСЂРёРЅС€РѕС‚РѕРІ
 function getScreens()
     return tostring(memory.tostring(sampGetBase() + 0x219F88) .. "/screens/")
 end
 
 -- [ Gallery ]
-local ImageNumber = 1                                                                                           -- ID картинки, которое сейчас отображается
-local imgs                                                                                                      -- Массив для загрузки скриншотов из папки
-local info = {}                                                                                                 -- Информация о пути и имени файла
-local logo = {}                                                                                                 -- Создание текстуры полученного файла PNG
+local ImageNumber = 1                                                                                           -- ID РєР°СЂС‚РёРЅРєРё, РєРѕС‚РѕСЂРѕРµ СЃРµР№С‡Р°СЃ РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ
+local imgs                                                                                                      -- РњР°СЃСЃРёРІ РґР»СЏ Р·Р°РіСЂСѓР·РєРё СЃРєСЂРёРЅС€РѕС‚РѕРІ РёР· РїР°РїРєРё
+local info = {}                                                                                                 -- РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїСѓС‚Рё Рё РёРјРµРЅРё С„Р°Р№Р»Р°
+local logo = {}                                                                                                 -- РЎРѕР·РґР°РЅРёРµ С‚РµРєСЃС‚СѓСЂС‹ РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ С„Р°Р№Р»Р° PNG
 
 -- [ Music Player]
 local Music = {
@@ -117,7 +115,7 @@ local Music = {
     ['Volume'] = 100, -- 2.0
     ['Pause'] = false,
     ['Path'] = 'moonloader/PhoneApps/Music', -- 2.0
-    ['Repeating'] = 'none', -- [none] - не повторять | [all] - повторять плейлист | [track] - повторять трек | 2.0
+    ['Repeating'] = 'none', -- [none] - РЅРµ РїРѕРІС‚РѕСЂСЏС‚СЊ | [all] - РїРѕРІС‚РѕСЂСЏС‚СЊ РїР»РµР№Р»РёСЃС‚ | [track] - РїРѕРІС‚РѕСЂСЏС‚СЊ С‚СЂРµРє | 2.0
     ['AddName'] = nil,
 }
 local AlwaysPlaylists = {} -- 2.0
@@ -195,65 +193,65 @@ end
 end
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local fontsize = {}                                                                                                          -- Размер шрифтов
-local mc = imgui.ColorConvertU32ToFloat4(0xFF3333AA)                                                                         -- Цвет
-variables['other']['Screen_X'], variables['other']['Screen_Y'] = getScreenResolution()                                       -- Получение разрешения монитора
-local clocklineimgui                                                                                                         -- Файл циферблата
-if not doesDirectoryExist(getWorkingDirectory()..'\\config\\PhoneApps') then                                                 -- Если нет папки PhoneApps, то создаём
+local fontsize = {}                                                                                                          -- Р Р°Р·РјРµСЂ С€СЂРёС„С‚РѕРІ
+local mc = imgui.ColorConvertU32ToFloat4(0xFF3333AA)                                                                         -- Р¦РІРµС‚
+variables['other']['Screen_X'], variables['other']['Screen_Y'] = getScreenResolution()                                       -- РџРѕР»СѓС‡РµРЅРёРµ СЂР°Р·СЂРµС€РµРЅРёСЏ РјРѕРЅРёС‚РѕСЂР°
+local clocklineimgui                                                                                                         -- Р¤Р°Р№Р» С†РёС„РµСЂР±Р»Р°С‚Р°
+if not doesDirectoryExist(getWorkingDirectory()..'\\config\\PhoneApps') then                                                 -- Р•СЃР»Рё РЅРµС‚ РїР°РїРєРё PhoneApps, С‚Рѕ СЃРѕР·РґР°С‘Рј
     createDirectory(getWorkingDirectory()..'\\config\\PhoneApps\\Images')
 end
-if not doesDirectoryExist(getWorkingDirectory()..'\\config\\PhoneApps\\Music') then                                          -- Если нет папки Music, то создаём
+if not doesDirectoryExist(getWorkingDirectory()..'\\config\\PhoneApps\\Music') then                                          -- Р•СЃР»Рё РЅРµС‚ РїР°РїРєРё Music, С‚Рѕ СЃРѕР·РґР°С‘Рј
     createDirectory(getWorkingDirectory()..'\\config\\PhoneApps\\Music')
 end
 if not doesFileExist(getWorkingDirectory()..'\\config\\PhoneApps\\Images\\clock.png') then
-    downloadUrlToFile('https://github.com/Kaster31/PhoneApps/releases/download/PhoneApps/clock.png',                         -- Если не скачан файл часов, то скачиваем
+    downloadUrlToFile('https://github.com/Kaster31/PhoneApps/releases/download/PhoneApps/clock.png',                         -- Р•СЃР»Рё РЅРµ СЃРєР°С‡Р°РЅ С„Р°Р№Р» С‡Р°СЃРѕРІ, С‚Рѕ СЃРєР°С‡РёРІР°РµРј
     getWorkingDirectory()..'\\config\\PhoneApps\\Images\\clock.png')
-    clocklineimgui = imgui.CreateTextureFromFile('moonloader\\config\\PhoneApps\\Images\\clock.png')                         -- Создание текстуры из PNG
+    clocklineimgui = imgui.CreateTextureFromFile('moonloader\\config\\PhoneApps\\Images\\clock.png')                         -- РЎРѕР·РґР°РЅРёРµ С‚РµРєСЃС‚СѓСЂС‹ РёР· PNG
 end
 
--- [ Биндер Кнопок]
-local filename_settings = getWorkingDirectory().."\\config\\PhoneApps\\buttons.txt"                                           -- Путь к файлу о хоткее
-if not doesFileExist(filename_settings) then                                                                                  -- Создание файла, если его нет
+-- [ Р‘РёРЅРґРµСЂ РљРЅРѕРїРѕРє]
+local filename_settings = getWorkingDirectory().."\\config\\PhoneApps\\buttons.txt"                                           -- РџСѓС‚СЊ Рє С„Р°Р№Р»Сѓ Рѕ С…РѕС‚РєРµРµ
+if not doesFileExist(filename_settings) then                                                                                  -- РЎРѕР·РґР°РЅРёРµ С„Р°Р№Р»Р°, РµСЃР»Рё РµРіРѕ РЅРµС‚
     local f = io.open(filename_settings, 'w')
     f:close()
 end
-luacfg = Luacfg()                                                                                                             -- Стандартные клавиши Хоткея
+luacfg = Luacfg()                                                                                                             -- РЎС‚Р°РЅРґР°СЂС‚РЅС‹Рµ РєР»Р°РІРёС€Рё РҐРѕС‚РєРµСЏ
 cfg = {
     StopWatchEnabled = {vkeys.VK_F4},                                                                                          
     StopWatchClear = {vkeys.VK_F5}
 }
-luacfg.load(filename_settings, cfg)                                                                                           -- Загрузка клавиш Хоткея
-local hotkeys = {   -- хоткей                                                                                                 -- Imgui Хоткейные клавиши
+luacfg.load(filename_settings, cfg)                                                                                           -- Р—Р°РіСЂСѓР·РєР° РєР»Р°РІРёС€ РҐРѕС‚РєРµСЏ
+local hotkeys = {   -- С…РѕС‚РєРµР№                                                                                                 -- Imgui РҐРѕС‚РєРµР№РЅС‹Рµ РєР»Р°РІРёС€Рё
     StopWatchEnabled = {v = deepcopy(cfg.StopWatchEnabled)},
     StopWatchClear = {v = deepcopy(cfg.StopWatchClear)}
 }
 ------------------------------------------------------------
-local JSONFiles = {'calendar','alarm','music'}                                                                               -- Массив JSON Файлов, которые нужно создать
+local JSONFiles = {'calendar','alarm','music'}                                                                               -- РњР°СЃСЃРёРІ JSON Р¤Р°Р№Р»РѕРІ, РєРѕС‚РѕСЂС‹Рµ РЅСѓР¶РЅРѕ СЃРѕР·РґР°С‚СЊ
 for _, Value in ipairs(JSONFiles) do
-    if not doesFileExist(getWorkingDirectory()..'/config/PhoneApps/'..Value..'.json') then                                   -- Если нет файла, то создаём пустой файл
+    if not doesFileExist(getWorkingDirectory()..'/config/PhoneApps/'..Value..'.json') then                                   -- Р•СЃР»Рё РЅРµС‚ С„Р°Р№Р»Р°, С‚Рѕ СЃРѕР·РґР°С‘Рј РїСѓСЃС‚РѕР№ С„Р°Р№Р»
         local File = io.open(getWorkingDirectory()..'/config/PhoneApps/'..Value..'.json',"r");
         if File == nil then 
             local table = {}
             local encodetable = encodeJson(table)
             File = io.open(getWorkingDirectory()..'/config/PhoneApps/'..Value..'.json',"w"); 
-            File:write(encodetable)                                                                                          -- Записываем нашу таблицу
+            File:write(encodetable)                                                                                          -- Р—Р°РїРёСЃС‹РІР°РµРј РЅР°С€Сѓ С‚Р°Р±Р»РёС†Сѓ
             File:flush()
             File:close()
         end
     end
 end
 -- [  JSON ]
-local NoteInDate                                                                                                             -- Таблица с заметками дат календаря
-local calendar = io.open(getWorkingDirectory()..'/config/PhoneApps/calendar.json',"r")                                       -- Открытие JSON файла
-local file = calendar:read("*a")                                                                                             -- Чтение строк с файла
-NoteInDate = decodeJson(file)                                                                                                -- Докодирование JSON файла
-calendar:close()                                                                                                             -- Закрытие JSON файла
+local NoteInDate                                                                                                             -- РўР°Р±Р»РёС†Р° СЃ Р·Р°РјРµС‚РєР°РјРё РґР°С‚ РєР°Р»РµРЅРґР°СЂСЏ
+local calendar = io.open(getWorkingDirectory()..'/config/PhoneApps/calendar.json',"r")                                       -- РћС‚РєСЂС‹С‚РёРµ JSON С„Р°Р№Р»Р°
+local file = calendar:read("*a")                                                                                             -- Р§С‚РµРЅРёРµ СЃС‚СЂРѕРє СЃ С„Р°Р№Р»Р°
+NoteInDate = decodeJson(file)                                                                                                -- Р”РѕРєРѕРґРёСЂРѕРІР°РЅРёРµ JSON С„Р°Р№Р»Р°
+calendar:close()                                                                                                             -- Р—Р°РєСЂС‹С‚РёРµ JSON С„Р°Р№Р»Р°
 
-local NoteInAlarm                                                                                                            -- Таблица с информацией о будильнике
-local alarmJSON = io.open(getWorkingDirectory()..'/config/PhoneApps/alarm.json',"r")                                         -- Открытие JSON файла
-local file = alarmJSON:read("*a")                                                                                            -- Чтение строк с файла
-NoteInAlarm = decodeJson(file)                                                                                               -- Докодирование JSON файла
-alarmJSON:close()                                                                                                            -- Закрытие JSON файла
+local NoteInAlarm                                                                                                            -- РўР°Р±Р»РёС†Р° СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ Рѕ Р±СѓРґРёР»СЊРЅРёРєРµ
+local alarmJSON = io.open(getWorkingDirectory()..'/config/PhoneApps/alarm.json',"r")                                         -- РћС‚РєСЂС‹С‚РёРµ JSON С„Р°Р№Р»Р°
+local file = alarmJSON:read("*a")                                                                                            -- Р§С‚РµРЅРёРµ СЃС‚СЂРѕРє СЃ С„Р°Р№Р»Р°
+NoteInAlarm = decodeJson(file)                                                                                               -- Р”РѕРєРѕРґРёСЂРѕРІР°РЅРёРµ JSON С„Р°Р№Р»Р°
+alarmJSON:close()                                                                                                            -- Р—Р°РєСЂС‹С‚РёРµ JSON С„Р°Р№Р»Р°
 
 local Playlists = {}
 
@@ -271,16 +269,16 @@ function getMusicList()
 		end
 	end
 	return files
-end                                                                                                          -- Закрытие JSON файла
+end                                                                                                          -- Р—Р°РєСЂС‹С‚РёРµ JSON С„Р°Р№Р»Р°
 
-function main()                                                                                                              -- Главная функция скрипта
-    while not isSampAvailable() do wait(200) end                                                                             -- Пока SA:MP не загружен ждём
-    sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Lua скрипт инициализирован [CMD: {FF0000}/app{FFFFFF}] {990000}!', -1)   -- Вывод сообщения в чат о загрузке скрипта
-    sampRegisterChatCommand('app',function()                                                                                 -- Регистрация команды
-        variables['imgui']['MainWindow'].v = not variables['imgui']['MainWindow'].v                                          -- Открытие/закрытие главного Imgui окна
+function main()                                                                                                              -- Р“Р»Р°РІРЅР°СЏ С„СѓРЅРєС†РёСЏ СЃРєСЂРёРїС‚Р°
+    while not isSampAvailable() do wait(200) end                                                                             -- РџРѕРєР° SA:MP РЅРµ Р·Р°РіСЂСѓР¶РµРЅ Р¶РґС‘Рј
+    sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Lua СЃРєСЂРёРїС‚ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅ [CMD: {FF0000}/app{FFFFFF}] {990000}!', -1)   -- Р’С‹РІРѕРґ СЃРѕРѕР±С‰РµРЅРёСЏ РІ С‡Р°С‚ Рѕ Р·Р°РіСЂСѓР·РєРµ СЃРєСЂРёРїС‚Р°
+    sampRegisterChatCommand('app',function()                                                                                 -- Р РµРіРёСЃС‚СЂР°С†РёСЏ РєРѕРјР°РЅРґС‹
+        variables['imgui']['MainWindow'].v = not variables['imgui']['MainWindow'].v                                          -- РћС‚РєСЂС‹С‚РёРµ/Р·Р°РєСЂС‹С‚РёРµ РіР»Р°РІРЅРѕРіРѕ Imgui РѕРєРЅР°
     end)
     for Key, Value in pairs(NoteInDate) do
-        local day,month,year = Key:match('(%d+)%.(%d+)%.(%d+)')                                                             -- Дата записи календаря
+        local day,month,year = Key:match('(%d+)%.(%d+)%.(%d+)')                                                             -- Р”Р°С‚Р° Р·Р°РїРёСЃРё РєР°Р»РµРЅРґР°СЂСЏ
         local datetime = { 
             year  = tonumber(year),
              month = tonumber(month),
@@ -290,8 +288,8 @@ function main()                                                                 
              sec   = 1
         }
         local seconds = os.time(datetime)                                                                                   
-        if os.time() > seconds then                                                                                         -- Если текущее время больше чем время записи, то выводим уведомление
-            notf.addNotification('Заметка на '..day..':'..month..':'..year..'\n'..Value, 2, 2)
+        if os.time() > seconds then                                                                                         -- Р•СЃР»Рё С‚РµРєСѓС‰РµРµ РІСЂРµРјСЏ Р±РѕР»СЊС€Рµ С‡РµРј РІСЂРµРјСЏ Р·Р°РїРёСЃРё, С‚Рѕ РІС‹РІРѕРґРёРј СѓРІРµРґРѕРјР»РµРЅРёРµ
+            notf.addNotification('Р—Р°РјРµС‚РєР° РЅР° '..day..':'..month..':'..year..'\n'..Value, 2, 2)
         end
     end
     StopWatchEnabled = rkeys.registerHotKey(hotkeys.StopWatchEnabled.v, true, function()
@@ -318,7 +316,7 @@ function main()                                                                 
         end
     end)
     wait(1000)
-    -- [ Получение PNG Файлов из папки скринов]
+    -- [ РџРѕР»СѓС‡РµРЅРёРµ PNG Р¤Р°Р№Р»РѕРІ РёР· РїР°РїРєРё СЃРєСЂРёРЅРѕРІ]
     imgs = folder.new(getScreens()) 
     imgs:submit('*')
     info = {}
@@ -336,21 +334,21 @@ function main()                                                                 
         local name = name:gsub('.mp3', '')
         table.insert(Playlists[1]['Tracks'], name)
     end
-    local musicJSON = io.open(getWorkingDirectory()..'/config/PhoneApps/music.json',"r")                                         -- Открытие JSON файла
-    local file = musicJSON:read("*a")                                                                                            -- Чтение строк с файла
-    local PlaylistsJSON = decodeJson(file)                                                                                       -- Докодирование JSON файла
+    local musicJSON = io.open(getWorkingDirectory()..'/config/PhoneApps/music.json',"r")                                         -- РћС‚РєСЂС‹С‚РёРµ JSON С„Р°Р№Р»Р°
+    local file = musicJSON:read("*a")                                                                                            -- Р§С‚РµРЅРёРµ СЃС‚СЂРѕРє СЃ С„Р°Р№Р»Р°
+    local PlaylistsJSON = decodeJson(file)                                                                                       -- Р”РѕРєРѕРґРёСЂРѕРІР°РЅРёРµ JSON С„Р°Р№Р»Р°
     for Key, Value in ipairs(PlaylistsJSON) do
         table.insert(Playlists, Value)
     end
     musicJSON:close()  
     ------------------------------------------
-    clocklineimgui = imgui.CreateTextureFromFile('moonloader\\config\\PhoneApps\\Images\\clock.png')                         -- Картинка циферблата
-    lua_thread.create(checkAlarm)                                                                                            -- Поток для активации будильника, если нужное время
-    lua_thread.create(TimerStart)                                                                                            -- Поток для активации Таймера
-    lua_thread.create(StopWatchStart)                                                                                        -- Поток для активации Секундомера
-    while true do                                                                                                            -- Бесконечный цикл
-        wait(0)                                                                                                              -- Задержка [0 ms]
-        -- Открытие Imgui окна зависит от значения переменной
+    clocklineimgui = imgui.CreateTextureFromFile('moonloader\\config\\PhoneApps\\Images\\clock.png')                         -- РљР°СЂС‚РёРЅРєР° С†РёС„РµСЂР±Р»Р°С‚Р°
+    lua_thread.create(checkAlarm)                                                                                            -- РџРѕС‚РѕРє РґР»СЏ Р°РєС‚РёРІР°С†РёРё Р±СѓРґРёР»СЊРЅРёРєР°, РµСЃР»Рё РЅСѓР¶РЅРѕРµ РІСЂРµРјСЏ
+    lua_thread.create(TimerStart)                                                                                            -- РџРѕС‚РѕРє РґР»СЏ Р°РєС‚РёРІР°С†РёРё РўР°Р№РјРµСЂР°
+    lua_thread.create(StopWatchStart)                                                                                        -- РџРѕС‚РѕРє РґР»СЏ Р°РєС‚РёРІР°С†РёРё РЎРµРєСѓРЅРґРѕРјРµСЂР°
+    while true do                                                                                                            -- Р‘РµСЃРєРѕРЅРµС‡РЅС‹Р№ С†РёРєР»
+        wait(0)                                                                                                              -- Р—Р°РґРµСЂР¶РєР° [0 ms]
+        -- РћС‚РєСЂС‹С‚РёРµ Imgui РѕРєРЅР° Р·Р°РІРёСЃРёС‚ РѕС‚ Р·РЅР°С‡РµРЅРёСЏ РїРµСЂРµРјРµРЅРЅРѕР№
         imgui.Process = variables['imgui']['MainWindow'].v or variables['imgui']['EditNote'].v or variables['imgui']['Alarm'].v or variables['imgui']['Timer'].v or variables['imgui']['StopWatch'].v or
             variables['imgui']['AddAlarm'].v or variables['imgui']['Gallery'].v or variables['imgui']['Music'].v or variables['imgui']['EditMusic'].v or variables['imgui']['AddToPlaylist'].v
         if wasKeyPressed(VK_L) and not sampIsChatInputActive() and not sampIsDialogActive() and not isSampfuncsConsoleActive() then
@@ -383,7 +381,7 @@ function main()                                                                 
             setAudioStreamState(Music['PlaySound'], as_action.PLAY)
             setAudioStreamVolume(Music['PlaySound'], 99)
             Music['NowPlaying'] = Numbers
-            notf.addNotification('Сейчас играет: '..Playlists[PlayListNumber]['Tracks'][Numbers], 2, 2)
+            notf.addNotification('РЎРµР№С‡Р°СЃ РёРіСЂР°РµС‚: '..Playlists[PlayListNumber]['Tracks'][Numbers], 2, 2)
         end
         if Music['PlaySound'] ~= nil and isKeyDown(0x11) and wasKeyPressed(0x38) and not sampIsChatInputActive() and not sampIsDialogActive() and not isSampfuncsConsoleActive() then
             setAudioStreamState(Music['PlaySound'], as_action.STOP)
@@ -397,33 +395,33 @@ function main()                                                                 
             setAudioStreamState(Music['PlaySound'], as_action.PLAY)
             setAudioStreamVolume(Music['PlaySound'], 99)
             Music['NowPlaying'] = Numbers
-            notf.addNotification('Сейчас играет: '..Playlists[PlayListNumber]['Tracks'][Numbers], 2, 2)
+            notf.addNotification('РЎРµР№С‡Р°СЃ РёРіСЂР°РµС‚: '..Playlists[PlayListNumber]['Tracks'][Numbers], 2, 2)
         end
         if Music['PlaySound'] ~= nil then -- Music
-            if getAudioStreamState(Music['PlaySound']) == as_status.STOPPED then                                            -- Если песня кончилась                                                                  -- Для Плейлистов:
-                if Playlists[PlayListNumber]['Name'] == Music['NowPlayingPL'] then                                                 -- Если текущий плейлист = из цикла то
-                    if Music['Repeating'] == 'none' then                                                                -- Если повтор выключен
-                        if Music['NowPlaying'] + 1 <= #Playlists[PlayListNumber]['Tracks'] then                                    -- Включаем следующую песню
+            if getAudioStreamState(Music['PlaySound']) == as_status.STOPPED then                                            -- Р•СЃР»Рё РїРµСЃРЅСЏ РєРѕРЅС‡РёР»Р°СЃСЊ                                                                  -- Р”Р»СЏ РџР»РµР№Р»РёСЃС‚РѕРІ:
+                if Playlists[PlayListNumber]['Name'] == Music['NowPlayingPL'] then                                                 -- Р•СЃР»Рё С‚РµРєСѓС‰РёР№ РїР»РµР№Р»РёСЃС‚ = РёР· С†РёРєР»Р° С‚Рѕ
+                    if Music['Repeating'] == 'none' then                                                                -- Р•СЃР»Рё РїРѕРІС‚РѕСЂ РІС‹РєР»СЋС‡РµРЅ
+                        if Music['NowPlaying'] + 1 <= #Playlists[PlayListNumber]['Tracks'] then                                    -- Р’РєР»СЋС‡Р°РµРј СЃР»РµРґСѓСЋС‰СѓСЋ РїРµСЃРЅСЋ
                             Music['PlaySound'] = loadAudioStream('moonloader/config/PhoneApps/Music/'.. Playlists[PlayListNumber]['Tracks'][Music['NowPlaying'] + 1]..'.mp3')
                             setAudioStreamState(Music['PlaySound'], as_action.PLAY)
                             setAudioStreamVolume(Music['PlaySound'], 99)
                             Music['NowPlaying'] = Music['NowPlaying'] + 1
-                            notf.addNotification('Сейчас играет: '..Playlists[PlayListNumber]['Tracks'][Music['NowPlaying']], 2, 2)
+                            notf.addNotification('РЎРµР№С‡Р°СЃ РёРіСЂР°РµС‚: '..Playlists[PlayListNumber]['Tracks'][Music['NowPlaying']], 2, 2)
                         else
                             Music['PlaySound'] = nil
                             Music['NowPlaying'] = 0 
                             Music['NowPlayingPL'] = 'All'
                             Music['Pause'] = false 
                         end 
-                    elseif Music['Repeating'] == 'track' then                                                               -- Если повтор трека, то включаем его заного
+                    elseif Music['Repeating'] == 'track' then                                                               -- Р•СЃР»Рё РїРѕРІС‚РѕСЂ С‚СЂРµРєР°, С‚Рѕ РІРєР»СЋС‡Р°РµРј РµРіРѕ Р·Р°РЅРѕРіРѕ
                         Music['PlaySound'] = loadAudioStream('moonloader/config/PhoneApps/Music/'.. Playlists[PlayListNumber]['Tracks'][Music['NowPlaying']]..'.mp3')
                         setAudioStreamState(Music['PlaySound'], as_action.PLAY)
                         setAudioStreamVolume(Music['PlaySound'], 99)
                         Music['NowPlaying'] = Music['NowPlaying']
-                        notf.addNotification('Сейчас играет: '..Playlists[PlayListNumber]['Tracks'][Music['NowPlaying']], 2, 2)
-                    elseif Music['Repeating'] == 'all' then                                                             -- Если повтор плейлиста, то:
+                        notf.addNotification('РЎРµР№С‡Р°СЃ РёРіСЂР°РµС‚: '..Playlists[PlayListNumber]['Tracks'][Music['NowPlaying']], 2, 2)
+                    elseif Music['Repeating'] == 'all' then                                                             -- Р•СЃР»Рё РїРѕРІС‚РѕСЂ РїР»РµР№Р»РёСЃС‚Р°, С‚Рѕ:
                         local Numbers = Music['NowPlaying'] 
-                        if Numbers + 1 > #Playlists[PlayListNumber]['Tracks'] then                                                     -- Если песня конечная, то ставим первый трек плейлиста
+                        if Numbers + 1 > #Playlists[PlayListNumber]['Tracks'] then                                                     -- Р•СЃР»Рё РїРµСЃРЅСЏ РєРѕРЅРµС‡РЅР°СЏ, С‚Рѕ СЃС‚Р°РІРёРј РїРµСЂРІС‹Р№ С‚СЂРµРє РїР»РµР№Р»РёСЃС‚Р°
                             Numbers = 1 
                         else 
                             Numbers =  Numbers+ 1 
@@ -432,7 +430,7 @@ function main()                                                                 
                         setAudioStreamState(Music['PlaySound'], as_action.PLAY)
                         setAudioStreamVolume(Music['PlaySound'], 99)
                         Music['NowPlaying'] = Numbers
-                        notf.addNotification('Сейчас играет: '..Playlists[PlayListNumber]['Tracks'][Numbers], 2, 2)
+                        notf.addNotification('РЎРµР№С‡Р°СЃ РёРіСЂР°РµС‚: '..Playlists[PlayListNumber]['Tracks'][Numbers], 2, 2)
                     end
                 end
             end
@@ -444,19 +442,19 @@ end
 function checkAlarm()
     while true do
         wait(1000)
-        local datetime = os.date("*t",os.time())                                                                              -- Текущение время
-        local DayOfWeek = tonumber(os.date("%w",os.time({ year=datetime['year'],                                              -- Получение дня недели по числу
+        local datetime = os.date("*t",os.time())                                                                              -- РўРµРєСѓС‰РµРЅРёРµ РІСЂРµРјСЏ
+        local DayOfWeek = tonumber(os.date("%w",os.time({ year=datetime['year'],                                              -- РџРѕР»СѓС‡РµРЅРёРµ РґРЅСЏ РЅРµРґРµР»Рё РїРѕ С‡РёСЃР»Сѓ
                 month = datetime['month'], day = datetime['day']})))
         if DayOfWeek == 0 then DayOfWeek = 7 end
-        for Key, Value in pairs(NoteInAlarm) do                                                                               -- Для Ключа, значения в массиве с будильниками
-            for Key2, Value2 in pairs(NoteInAlarm[Key]['days']) do                                                            -- Для Ключа2, значения2 в массиве с будильниками ключа 'days'
-                if Value2 and Key2 == ActiveDays['name'][DayOfWeek] then                                                      -- Если день активный и Ключ2 = текущему дню тогда
-                    if NoteInAlarm[Key]['active'] then                                                                        -- Если будильник включён то
-                        local times = os.date("%X", os.time())                                                                -- Получение текущего времени %h:%m:%s
-                        local hours, minute, second = times:match('(%d+):(%d+):(%d+)')                                        -- Разбиение времени на переменные
-                        if tonumber(hours) == NoteInAlarm[Key]['hour'] and tonumber(minute) == NoteInAlarm[Key]['minute']     -- Если час = часу будильника и минута тоже и секунды меньше 4, тогда активируем будильник
+        for Key, Value in pairs(NoteInAlarm) do                                                                               -- Р”Р»СЏ РљР»СЋС‡Р°, Р·РЅР°С‡РµРЅРёСЏ РІ РјР°СЃСЃРёРІРµ СЃ Р±СѓРґРёР»СЊРЅРёРєР°РјРё
+            for Key2, Value2 in pairs(NoteInAlarm[Key]['days']) do                                                            -- Р”Р»СЏ РљР»СЋС‡Р°2, Р·РЅР°С‡РµРЅРёСЏ2 РІ РјР°СЃСЃРёРІРµ СЃ Р±СѓРґРёР»СЊРЅРёРєР°РјРё РєР»СЋС‡Р° 'days'
+                if Value2 and Key2 == ActiveDays['name'][DayOfWeek] then                                                      -- Р•СЃР»Рё РґРµРЅСЊ Р°РєС‚РёРІРЅС‹Р№ Рё РљР»СЋС‡2 = С‚РµРєСѓС‰РµРјСѓ РґРЅСЋ С‚РѕРіРґР°
+                    if NoteInAlarm[Key]['active'] then                                                                        -- Р•СЃР»Рё Р±СѓРґРёР»СЊРЅРёРє РІРєР»СЋС‡С‘РЅ С‚Рѕ
+                        local times = os.date("%X", os.time())                                                                -- РџРѕР»СѓС‡РµРЅРёРµ С‚РµРєСѓС‰РµРіРѕ РІСЂРµРјРµРЅРё %h:%m:%s
+                        local hours, minute, second = times:match('(%d+):(%d+):(%d+)')                                        -- Р Р°Р·Р±РёРµРЅРёРµ РІСЂРµРјРµРЅРё РЅР° РїРµСЂРµРјРµРЅРЅС‹Рµ
+                        if tonumber(hours) == NoteInAlarm[Key]['hour'] and tonumber(minute) == NoteInAlarm[Key]['minute']     -- Р•СЃР»Рё С‡Р°СЃ = С‡Р°СЃСѓ Р±СѓРґРёР»СЊРЅРёРєР° Рё РјРёРЅСѓС‚Р° С‚РѕР¶Рµ Рё СЃРµРєСѓРЅРґС‹ РјРµРЅСЊС€Рµ 4, С‚РѕРіРґР° Р°РєС‚РёРІРёСЂСѓРµРј Р±СѓРґРёР»СЊРЅРёРє
                                 and tonumber(second) < 4 then
-                            notf.addNotification('Будильник сработал!', 2, 2)
+                            notf.addNotification('Р‘СѓРґРёР»СЊРЅРёРє СЃСЂР°Р±РѕС‚Р°Р»!', 2, 2)
                             addOneOffSound(0.0, 0.0, 0.0, 1056) 
                         end
                     end
@@ -466,14 +464,14 @@ function checkAlarm()
     end
 end
 
-function imgui.BeforeDrawFrame()                                                                                             -- Функция работы с окном перед открытием Imgui
-    if fontsize[25] == nil then                                                                                              -- Загрузка шрифта с 25 размером
+function imgui.BeforeDrawFrame()                                                                                             -- Р¤СѓРЅРєС†РёСЏ СЂР°Р±РѕС‚С‹ СЃ РѕРєРЅРѕРј РїРµСЂРµРґ РѕС‚РєСЂС‹С‚РёРµРј Imgui
+    if fontsize[25] == nil then                                                                                              -- Р—Р°РіСЂСѓР·РєР° С€СЂРёС„С‚Р° СЃ 25 СЂР°Р·РјРµСЂРѕРј
         fontsize[25] = imgui.GetIO().Fonts:AddFontFromFileTTF(getFolderPath(0x14) .. '\\trebucbd.ttf', 25.0, nil, imgui.GetIO().Fonts:GetGlyphRangesCyrillic())
     end
-    if fontsize[18] == nil then                                                                                              -- Загрузка шрифта с 18 размером
+    if fontsize[18] == nil then                                                                                              -- Р—Р°РіСЂСѓР·РєР° С€СЂРёС„С‚Р° СЃ 18 СЂР°Р·РјРµСЂРѕРј
         fontsize[18] = imgui.GetIO().Fonts:AddFontFromFileTTF(getFolderPath(0x14) .. '\\trebucbd.ttf', 18.0, nil, imgui.GetIO().Fonts:GetGlyphRangesCyrillic())
     end
-    if fontsize[13] == nil then                                                                                              -- Загрузка шрифта с 13 размером
+    if fontsize[13] == nil then                                                                                              -- Р—Р°РіСЂСѓР·РєР° С€СЂРёС„С‚Р° СЃ 13 СЂР°Р·РјРµСЂРѕРј
         fontsize[13] = imgui.GetIO().Fonts:AddFontFromFileTTF(getFolderPath(0x14) .. '\\trebucbd.ttf', 13.0, nil, imgui.GetIO().Fonts:GetGlyphRangesCyrillic())
     end
 end
@@ -481,49 +479,49 @@ function imgui.OnDrawFrame()
     if variables['imgui']['Gallery'].v then
         imgui.SetNextWindowPos(imgui.ImVec2(variables['other']['Screen_X']/6, variables['other']['Screen_Y']/6), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowSize(imgui.ImVec2(variables['other']['Screen_X']/1.5,variables['other']['Screen_Y']/1.5 + 120), imgui.Cond.FirstUseEver)
-        imgui.Begin(u8'Галерея', variables['imgui']['Gallery'])
+        imgui.Begin(u8'Р“Р°Р»РµСЂРµСЏ', variables['imgui']['Gallery'])
             Gallery()
         imgui.End()
     end
     if variables['imgui']['StopWatch'].v then
         imgui.SetNextWindowPos(imgui.ImVec2(variables['other']['Screen_X']-200, variables['other']['Screen_Y']-150), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowSize(imgui.ImVec2(200,150), imgui.Cond.FirstUseEver)
-        imgui.Begin(u8'Секундомер',variables['imgui']['StopWatch'])
+        imgui.Begin(u8'РЎРµРєСѓРЅРґРѕРјРµСЂ',variables['imgui']['StopWatch'])
             StopWatch()
         imgui.End()
     end
     if variables['imgui']['Timer'].v then
         imgui.SetNextWindowPos(imgui.ImVec2(variables['other']['Screen_X']-200, variables['other']['Screen_Y']-100), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowSize(imgui.ImVec2(200,100))
-        imgui.Begin(u8'Таймер',variables['imgui']['Timer'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
+        imgui.Begin(u8'РўР°Р№РјРµСЂ',variables['imgui']['Timer'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
             Timer()
         imgui.End()
     end
     if variables['imgui']['Alarm'].v then
         imgui.SetNextWindowPos(imgui.ImVec2(variables['other']['Screen_X']/3+variables['imgui']['WindowSize']['x']+5, variables['other']['Screen_Y']/3), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowSize(imgui.ImVec2(300,450))
-        imgui.Begin(u8'Будильник',variables['imgui']['Alarm'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
+        imgui.Begin(u8'Р‘СѓРґРёР»СЊРЅРёРє',variables['imgui']['Alarm'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
             Alarm()
         imgui.End()
     end
     if variables['imgui']['AddAlarm'].v then
         imgui.SetNextWindowPos(imgui.ImVec2(variables['other']['Screen_X']/3+variables['imgui']['WindowSize']['x']+5, variables['other']['Screen_Y']/3+290), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowSize(imgui.ImVec2(300,160))
-        imgui.Begin(u8'Добавить Будильник',variables['imgui']['AddAlarm'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
+        imgui.Begin(u8'Р”РѕР±Р°РІРёС‚СЊ Р‘СѓРґРёР»СЊРЅРёРє',variables['imgui']['AddAlarm'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
             AddAlarm()
         imgui.End()
     end
     if variables['imgui']['EditMusic'].v then
         imgui.SetNextWindowPos(imgui.ImVec2(variables['other']['Screen_X']/3+variables['imgui']['WindowSize']['x']+5, variables['other']['Screen_Y']/3+290), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowSize(imgui.ImVec2(310,100))
-        imgui.Begin(u8'Добавить плейлист',variables['imgui']['EditMusic'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
+        imgui.Begin(u8'Р”РѕР±Р°РІРёС‚СЊ РїР»РµР№Р»РёСЃС‚',variables['imgui']['EditMusic'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
             AddPlayList()
         imgui.End()
     end
     if variables['imgui']['AddToPlaylist'].v then
         imgui.SetNextWindowPos(imgui.ImVec2(variables['other']['Screen_X']/3+variables['imgui']['WindowSize']['x']+5, variables['other']['Screen_Y']/3+290), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowSize(imgui.ImVec2(310,260))
-        imgui.Begin(u8'Добавить в плейлист',variables['imgui']['AddToPlaylist'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
+        imgui.Begin(u8'Р”РѕР±Р°РІРёС‚СЊ РІ РїР»РµР№Р»РёСЃС‚',variables['imgui']['AddToPlaylist'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
             AddToPlayList()
         imgui.End()
     end
@@ -539,20 +537,20 @@ function imgui.OnDrawFrame()
         imgui.SetNextWindowPos(imgui.ImVec2(variables['other']['Screen_X']/3, variables['other']['Screen_Y']/3), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowSize(imgui.ImVec2(variables['imgui']['WindowSize']['x'], variables['imgui']['WindowSize']['y']), imgui.Cond.FirstUseEver)
         imgui.Begin('Apps',variables['imgui']['MainWindow'], imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize + imgui.WindowFlags.NoScrollbar + imgui.WindowFlags.NoTitleBar)
-        -- >> Закрытие окна
+        -- >> Р—Р°РєСЂС‹С‚РёРµ РѕРєРЅР°
             imgui.SameLine()
             imgui.SetCursorPos(imgui.ImVec2(variables['imgui']['WindowSize']['x']-30, 30))
             imgui.CloseButton(6, variables['imgui']['MainWindow']) 
-        -->> Заголовок активного раздела
+        -->> Р—Р°РіРѕР»РѕРІРѕРє Р°РєС‚РёРІРЅРѕРіРѕ СЂР°Р·РґРµР»Р°
             imgui.SetCursorPos( imgui.ImVec2(variables['imgui']['WindowSize']['x']/3, 10) ) 
             imgui.BeginChild('##Title', imgui.ImVec2(400 , 40) , false)
                 imgui.PushFont(fontsize[25])
-                imgui.TextColoredRGB(Navigate['name']) -- название скрипта
+                imgui.TextColoredRGB(Navigate['name']) -- РЅР°Р·РІР°РЅРёРµ СЃРєСЂРёРїС‚Р°
                 imgui.SameLine()
                 imgui.Text(u8('| '..Navigate['selected']))
                 imgui.PopFont()
             imgui.EndChild()
-       -->> Кнопки по разделам главного меню
+       -->> РљРЅРѕРїРєРё РїРѕ СЂР°Р·РґРµР»Р°Рј РіР»Р°РІРЅРѕРіРѕ РјРµРЅСЋ
             imgui.NewLine()
             imgui.BeginChild('##Buttons', imgui.ImVec2(600, 40), false)
                 imgui.PushFont(fontsize[18])
@@ -564,7 +562,7 @@ function imgui.OnDrawFrame()
                         if Navigate['buttons'] ~= Navigate['selected'] then
                             imgui.SameLine(nil, 30)
                         end
-                        --[[if i == 7 then -- Если будет больше, чем 7 объектов, то переносим
+                        --[[if i == 7 then -- Р•СЃР»Рё Р±СѓРґРµС‚ Р±РѕР»СЊС€Рµ, С‡РµРј 7 РѕР±СЉРµРєС‚РѕРІ, С‚Рѕ РїРµСЂРµРЅРѕСЃРёРј
                             imgui.NewLine()
                             imgui.NewLine()
                             imgui.SameLine(55)
@@ -573,8 +571,8 @@ function imgui.OnDrawFrame()
                 imgui.PopStyleVar()
                 imgui.PopFont()
             imgui.EndChild()
-        -->> Получение контента
-        -- Свой цвет + смещение заголовка на 60 пикселей вправо
+        -->> РџРѕР»СѓС‡РµРЅРёРµ РєРѕРЅС‚РµРЅС‚Р°
+        -- РЎРІРѕР№ С†РІРµС‚ + СЃРјРµС‰РµРЅРёРµ Р·Р°РіРѕР»РѕРІРєР° РЅР° 60 РїРёРєСЃРµР»РµР№ РІРїСЂР°РІРѕ
         imgui.PushStyleColor(imgui.Col.ChildWindowBg, imgui.ImVec4(0.01, 0.01, 0.01, 0.00))
         imgui.PushStyleColor(imgui.Col.Border, imgui.ImVec4(0, 0, 0, 0))
         imgui.BeginTitleChild(u8(Navigate['selected']), imgui.ImVec2(-1, -1), imgui.ImVec4(0.3, 1, 0.3, 1), variables['imgui']['WindowSize']['x']/2 - imgui.CalcTextSize(u8(Navigate['selected'])).x/2 )
@@ -586,32 +584,32 @@ function imgui.OnDrawFrame()
 end
 
 function StopWatch()
-    local tLastKeys = {} -- Таблица для клавиш Хоткея
-    if require('imgui_addons').HotKey("##StopWatchEnabled", hotkeys.StopWatchEnabled, tLastKeys, 100) then  -- Смена клавиши хоткея
+    local tLastKeys = {} -- РўР°Р±Р»РёС†Р° РґР»СЏ РєР»Р°РІРёС€ РҐРѕС‚РєРµСЏ
+    if require('imgui_addons').HotKey("##StopWatchEnabled", hotkeys.StopWatchEnabled, tLastKeys, 100) then  -- РЎРјРµРЅР° РєР»Р°РІРёС€Рё С…РѕС‚РєРµСЏ
         rkeys.changeHotKey(StopWatchEnabled, hotkeys.StopWatchEnabled.v)
         cfg.StopWatchEnabled = deepcopy(hotkeys.StopWatchEnabled.v)
         luacfg.save(filename_settings, cfg)
     end
-    imgui.Hint(u8('Чтобы включить/остановить секундомер используйте эту клавишу  или сочитание клавиш'))    -- Подсказка
-    if require('imgui_addons').HotKey("##StopWatchClear", hotkeys.StopWatchClear, tLastKeys, 100) then      -- Смена клавиши хоткея
+    imgui.Hint(u8('Р§С‚РѕР±С‹ РІРєР»СЋС‡РёС‚СЊ/РѕСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРµРєСѓРЅРґРѕРјРµСЂ РёСЃРїРѕР»СЊР·СѓР№С‚Рµ СЌС‚Сѓ РєР»Р°РІРёС€Сѓ  РёР»Рё СЃРѕС‡РёС‚Р°РЅРёРµ РєР»Р°РІРёС€'))    -- РџРѕРґСЃРєР°Р·РєР°
+    if require('imgui_addons').HotKey("##StopWatchClear", hotkeys.StopWatchClear, tLastKeys, 100) then      -- РЎРјРµРЅР° РєР»Р°РІРёС€Рё С…РѕС‚РєРµСЏ
         rkeys.changeHotKey(StopWatchClear, hotkeys.StopWatchClear.v)
         cfg.StopWatchClear = deepcopy(hotkeys.StopWatchClear.v)
         luacfg.save(filename_settings, cfg)
     end
-    imgui.Hint(u8('Чтобы сбросить секундомер используйте эту клавишу или сочитание клавиш'))                -- Подсказка
-    if imgui.Button(u8'Сделать отметку', imgui.ImVec2(-0.1,20)) then                                        -- Круг в секундомере
+    imgui.Hint(u8('Р§С‚РѕР±С‹ СЃР±СЂРѕСЃРёС‚СЊ СЃРµРєСѓРЅРґРѕРјРµСЂ РёСЃРїРѕР»СЊР·СѓР№С‚Рµ СЌС‚Сѓ РєР»Р°РІРёС€Сѓ РёР»Рё СЃРѕС‡РёС‚Р°РЅРёРµ РєР»Р°РІРёС€'))                -- РџРѕРґСЃРєР°Р·РєР°
+    if imgui.Button(u8'РЎРґРµР»Р°С‚СЊ РѕС‚РјРµС‚РєСѓ', imgui.ImVec2(-0.1,20)) then                                        -- РљСЂСѓРі РІ СЃРµРєСѓРЅРґРѕРјРµСЂРµ
         table.insert(StopWatchVariables.logs, StopWatchVariables['Text'].v)
     end
-    imgui.CenterText(u8(StopWatchVariables['Text'].v))                                                      -- Вывод текущего времени секундомера [переменная]
+    imgui.CenterText(u8(StopWatchVariables['Text'].v))                                                      -- Р’С‹РІРѕРґ С‚РµРєСѓС‰РµРіРѕ РІСЂРµРјРµРЅРё СЃРµРєСѓРЅРґРѕРјРµСЂР° [РїРµСЂРµРјРµРЅРЅР°СЏ]
     imgui.Separator()
-    if StopWatchVariables['logs'] ~= nil then                                                               -- Вывод Кругов
+    if StopWatchVariables['logs'] ~= nil then                                                               -- Р’С‹РІРѕРґ РљСЂСѓРіРѕРІ
         for Key, Value in ipairs(StopWatchVariables['logs']) do
-            imgui.Text(u8('Круг#'..Key..': '..Value))
+            imgui.Text(u8('РљСЂСѓРі#'..Key..': '..Value))
         end
     end
 end
 
-function StopWatchStart() -- Поток отображения текущего времени секундомера
+function StopWatchStart() -- РџРѕС‚РѕРє РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ С‚РµРєСѓС‰РµРіРѕ РІСЂРµРјРµРЅРё СЃРµРєСѓРЅРґРѕРјРµСЂР°
     while true do 
         wait(0)
         if StopWatchVariables['enabled'] and not StopWatchVariables['paused'] then
@@ -622,13 +620,13 @@ function StopWatchStart() -- Поток отображения текущего времени секундомера
     end
 end
 
-local TimerVariables = {  -- Время отсчёта для таймера
+local TimerVariables = {  -- Р’СЂРµРјСЏ РѕС‚СЃС‡С‘С‚Р° РґР»СЏ С‚Р°Р№РјРµСЂР°
     ['Hour'] = imgui.ImInt(0),
     ['Minute'] = imgui.ImInt(0),
     ['Second'] = imgui.ImInt(0),
     ['active'] = false
 }
-function Timer()    -- Таймер
+function Timer()    -- РўР°Р№РјРµСЂ
     local Hour = TimerVariables['Hour'].v 
     if Hour < 10 then Hour = '0'..TimerVariables['Hour'].v end
     local Minute = TimerVariables['Minute'].v 
@@ -636,19 +634,19 @@ function Timer()    -- Таймер
     local Second = TimerVariables['Second'].v 
     if Second < 10 then Second = '0'..TimerVariables['Second'].v end
     imgui.CenterText(u8(Hour..':'..Minute..':'..Second))
-    imgui.PushItemWidth(60)                                                                                  -- Установка длины объектам  
-    imgui.SliderInt(u8"##Час:", TimerVariables['Hour'], 0, 23) 
+    imgui.PushItemWidth(60)                                                                                  -- РЈСЃС‚Р°РЅРѕРІРєР° РґР»РёРЅС‹ РѕР±СЉРµРєС‚Р°Рј  
+    imgui.SliderInt(u8"##Р§Р°СЃ:", TimerVariables['Hour'], 0, 23) 
     imgui.SameLine()
-    imgui.SliderInt(u8"##Минуты:", TimerVariables['Minute'], 0, 59)
+    imgui.SliderInt(u8"##РњРёРЅСѓС‚С‹:", TimerVariables['Minute'], 0, 59)
     imgui.SameLine()
-    imgui.SliderInt(u8"##Секунды:", TimerVariables['Second'], 0, 59)
+    imgui.SliderInt(u8"##РЎРµРєСѓРЅРґС‹:", TimerVariables['Second'], 0, 59)
     imgui.PopItemWidth()  
-    if imgui.Button(TimerVariables['active'] and u8'Пауза' or u8'Запустить', imgui.ImVec2(-1, 20)) then      -- Запуск/Пауза
+    if imgui.Button(TimerVariables['active'] and u8'РџР°СѓР·Р°' or u8'Р—Р°РїСѓСЃС‚РёС‚СЊ', imgui.ImVec2(-1, 20)) then      -- Р—Р°РїСѓСЃРє/РџР°СѓР·Р°
         TimerVariables['active'] = not TimerVariables['active']
     end
 end
 
-function TimerStart() -- Поток отсчёта времени в Таймере
+function TimerStart() -- РџРѕС‚РѕРє РѕС‚СЃС‡С‘С‚Р° РІСЂРµРјРµРЅРё РІ РўР°Р№РјРµСЂРµ
     while true do
         wait(1000)
         if TimerVariables['active'] then
@@ -663,55 +661,55 @@ function TimerStart() -- Поток отсчёта времени в Таймере
             end
             if TimerVariables['Hour'].v == 0 and TimerVariables['Minute'].v == 0 and TimerVariables['Second'].v == 0 then
                 TimerVariables['active'] = not TimerVariables['active']
-                notf.addNotification('Время Таймера вышло', 2, 2)
+                notf.addNotification('Р’СЂРµРјСЏ РўР°Р№РјРµСЂР° РІС‹С€Р»Рѕ', 2, 2)
                 addOneOffSound(0.0, 0.0, 0.0, 1056) 
             end
         end
     end
 end
 
-function NoteCalendar() -- Редактирование текста для записки в календаре
-    imgui.Text(variables['imgui']['SelectedDate'])                                                                                          -- Текущая запись дня в календаре
+function NoteCalendar() -- Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С‚РµРєСЃС‚Р° РґР»СЏ Р·Р°РїРёСЃРєРё РІ РєР°Р»РµРЅРґР°СЂРµ
+    imgui.Text(variables['imgui']['SelectedDate'])                                                                                          -- РўРµРєСѓС‰Р°СЏ Р·Р°РїРёСЃСЊ РґРЅСЏ РІ РєР°Р»РµРЅРґР°СЂРµ
     if NoteInDate[tostring(variables['imgui']['SelectedDate'])] ~= nil then
-        imgui.Text(u8('Старый текст: ')..u8(NoteInDate[tostring(variables['imgui']['SelectedDate'])]))
+        imgui.Text(u8('РЎС‚Р°СЂС‹Р№ С‚РµРєСЃС‚: ')..u8(NoteInDate[tostring(variables['imgui']['SelectedDate'])]))
     end
-    imgui.Text(u8('Новый текст: ')..variables['imgui']['Text'].v)
+    imgui.Text(u8('РќРѕРІС‹Р№ С‚РµРєСЃС‚: ')..variables['imgui']['Text'].v)
     imgui.InputTextMultiline('##WriteLine', variables['imgui']['Text'], imgui.ImVec2(-1, 150))
-    if imgui.Button('Save',imgui.ImVec2(70,20)) then                                                                                        -- Сохранить текущую запись
+    if imgui.Button('Save',imgui.ImVec2(70,20)) then                                                                                        -- РЎРѕС…СЂР°РЅРёС‚СЊ С‚РµРєСѓС‰СѓСЋ Р·Р°РїРёСЃСЊ
         NoteInDate[tostring(variables['imgui']['SelectedDate'])] = u8:decode(variables['imgui']['Text'].v)                                                                                                                      
         variables['imgui']['Text'] = imgui.ImBuffer('', 1000)
-        sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Сохранено{990000}!', -1) 
+        sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] РЎРѕС…СЂР°РЅРµРЅРѕ{990000}!', -1) 
     end
     imgui.SameLine()
-    if NoteInDate[tostring(variables['imgui']['SelectedDate'])] ~= nil then                                                                 -- Удалить текущую запись
+    if NoteInDate[tostring(variables['imgui']['SelectedDate'])] ~= nil then                                                                 -- РЈРґР°Р»РёС‚СЊ С‚РµРєСѓС‰СѓСЋ Р·Р°РїРёСЃСЊ
         if imgui.Button('Delete',imgui.ImVec2(70,20)) then
             NoteInDate[tostring(variables['imgui']['SelectedDate'])] = nil
-            sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Удалено{990000}!', -1) 
+            sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] РЈРґР°Р»РµРЅРѕ{990000}!', -1) 
         end
     end
 end
 
-function getContentMenu(section)                                                                                                            -- Получение содержимого меню
-	if section == Navigate['buttons'][1][1] --[[ Секция 1 ]] then                                                                           -- Если секция [Информация]
+function getContentMenu(section)                                                                                                            -- РџРѕР»СѓС‡РµРЅРёРµ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ РјРµРЅСЋ
+	if section == Navigate['buttons'][1][1] --[[ РЎРµРєС†РёСЏ 1 ]] then                                                                           -- Р•СЃР»Рё СЃРµРєС†РёСЏ [РРЅС„РѕСЂРјР°С†РёСЏ]
         Information()
-    elseif section == Navigate['buttons'][2][1] --[[ Секция 2 ]] then                                                                       -- Если секция [Календарь]
+    elseif section == Navigate['buttons'][2][1] --[[ РЎРµРєС†РёСЏ 2 ]] then                                                                       -- Р•СЃР»Рё СЃРµРєС†РёСЏ [РљР°Р»РµРЅРґР°СЂСЊ]
         Calendar()  
-    elseif section == Navigate['buttons'][3][1] --[[ Секция 3 ]] then                                                                       -- Если секция [Калькулятор]
+    elseif section == Navigate['buttons'][3][1] --[[ РЎРµРєС†РёСЏ 3 ]] then                                                                       -- Р•СЃР»Рё СЃРµРєС†РёСЏ [РљР°Р»СЊРєСѓР»СЏС‚РѕСЂ]
         Calculator()
-    elseif section == Navigate['buttons'][4][1] --[[ Секций 4 ]] then                                                                       -- Если секция [Музыка]
+    elseif section == Navigate['buttons'][4][1] --[[ РЎРµРєС†РёР№ 4 ]] then                                                                       -- Р•СЃР»Рё СЃРµРєС†РёСЏ [РњСѓР·С‹РєР°]
         Musics()
-    elseif section == Navigate['buttons'][5][1] --[[ Секция 5 ]] then                                                                       -- Если секция [Часы]
+    elseif section == Navigate['buttons'][5][1] --[[ РЎРµРєС†РёСЏ 5 ]] then                                                                       -- Р•СЃР»Рё СЃРµРєС†РёСЏ [Р§Р°СЃС‹]
         Clock()
-    elseif section == Navigate['buttons'][6][1] --[[ Секция 6 ]] then                                                                       -- Если секция [Галерея]
+    elseif section == Navigate['buttons'][6][1] --[[ РЎРµРєС†РёСЏ 6 ]] then                                                                       -- Р•СЃР»Рё СЃРµРєС†РёСЏ [Р“Р°Р»РµСЂРµСЏ]
         variables['imgui']['MainWindow'].v = false
         Navigate['selected'] = Navigate['buttons'][1][1]
         variables['imgui']['Gallery'].v = true
     end
 end
 
-local BTNsize = imgui.ImVec2(80,20) -- Размер Кнопки
-local WindowMode = 'All'    -- Плейлист окно
-function Musics() -- Вывод окна музыки
+local BTNsize = imgui.ImVec2(80,20) -- Р Р°Р·РјРµСЂ РљРЅРѕРїРєРё
+local WindowMode = 'All'    -- РџР»РµР№Р»РёСЃС‚ РѕРєРЅРѕ
+function Musics() -- Р’С‹РІРѕРґ РѕРєРЅР° РјСѓР·С‹РєРё
     imgui.BeginChild('##left', imgui.ImVec2(500, 0), false)
         playlistmusic()
     imgui.EndChild()
@@ -722,16 +720,16 @@ function Musics() -- Вывод окна музыки
     imgui.EndChild()
 end
 
-function getPlayLists() -- Получение списка плейлистов
-    imgui.CenterText(u8('..:: Список Плейлистов ::..'))
-    if imgui.Button(u8('Создать Плейлист'), imgui.ImVec2(-0.1,20)) then variables['imgui']['EditMusic'].v = not variables['imgui']['EditMusic'].v  end
+function getPlayLists() -- РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° РїР»РµР№Р»РёСЃС‚РѕРІ
+    imgui.CenterText(u8('..:: РЎРїРёСЃРѕРє РџР»РµР№Р»РёСЃС‚РѕРІ ::..'))
+    if imgui.Button(u8('РЎРѕР·РґР°С‚СЊ РџР»РµР№Р»РёСЃС‚'), imgui.ImVec2(-0.1,20)) then variables['imgui']['EditMusic'].v = not variables['imgui']['EditMusic'].v  end
     if Playlists ~= nil then
         for Key, Value in pairs(Playlists) do
             imgui.BeginChild('##left', imgui.ImVec2(230, 0), true)
                 if imgui.ButtonHex(Playlists[Key]['Name'], 0x808080, imgui.ImVec2(140,20)) then WindowMode = Playlists[Key]['Name'] end
                 if Key ~= 1 then
                     imgui.SameLine()
-                    if imgui.ButtonHex(u8'Удалить##'..Key, 0x808080, imgui.ImVec2(60,20)) then Playlists[Key] = nil end
+                    if imgui.ButtonHex(u8'РЈРґР°Р»РёС‚СЊ##'..Key, 0x808080, imgui.ImVec2(60,20)) then Playlists[Key] = nil end
                 end
             imgui.EndChild()
         end
@@ -741,15 +739,15 @@ end
 --Music['Repeating'] 'none' 'all' 'track'
 local RepeatingTable = 
 {
-    'Без повтора',
-    'Повтор Плейлиста',
-    'Повтор аудио'
+    'Р‘РµР· РїРѕРІС‚РѕСЂР°',
+    'РџРѕРІС‚РѕСЂ РџР»РµР№Р»РёСЃС‚Р°',
+    'РџРѕРІС‚РѕСЂ Р°СѓРґРёРѕ'
 }
 local NameOfRepeting = ''
-function playlistmusic() -- Получение песен из плейлиста
+function playlistmusic() -- РџРѕР»СѓС‡РµРЅРёРµ РїРµСЃРµРЅ РёР· РїР»РµР№Р»РёСЃС‚Р°
     imgui.CenterText('..! '..WindowMode.. ' !..')
-    imgui.CenterText(u8('..:: Аудиозаписи ::..'))
-    -- Повтор
+    imgui.CenterText(u8('..:: РђСѓРґРёРѕР·Р°РїРёСЃРё ::..'))
+    -- РџРѕРІС‚РѕСЂ
     if Music['Repeating'] == 'all' then NameOfRepeting = RepeatingTable[2]
     elseif Music['Repeating'] == 'none' then NameOfRepeting = RepeatingTable[1]
     elseif Music['Repeating'] == 'track' then NameOfRepeting = RepeatingTable[3] end
@@ -758,31 +756,31 @@ function playlistmusic() -- Получение песен из плейлиста
         elseif Music['Repeating'] == 'track' then Music['Repeating'] = 'none' 
         elseif Music['Repeating'] == 'none' then Music['Repeating'] = 'all'  end
     end
-    -- Треки
+    -- РўСЂРµРєРё
     for key, value in pairs(Playlists) do
         if Playlists[key]['Name'] == WindowMode then
             for Key, Value in pairs(Playlists[key]['Tracks']) do
                 imgui.ButtonHex(u8(Value..'##'..key), 0x42aaff, imgui.ImVec2(360,20)) -- Name
                 imgui.SameLine()
                 if Key == Music['NowPlaying'] and Music['Pause'] == false and Playlists[key]['Name'] == Music['NowPlayingPL'] then
-                    if imgui.ButtonHex(u8'Пауза##'..Value, 0x808080, BTNsize) then 
+                    if imgui.ButtonHex(u8'РџР°СѓР·Р°##'..Value, 0x808080, BTNsize) then 
                         setAudioStreamState(Music['PlaySound'], as_action.PAUSE)
                         Music['Pause'] = true 
                     end
                 elseif Key == Music['NowPlaying'] and Music['Pause'] and Playlists[key]['Name'] == Music['NowPlayingPL'] then 
-                    if imgui.ButtonHex(u8'Продолжить##'..Value, 0x808080, BTNsize) then 
+                    if imgui.ButtonHex(u8'РџСЂРѕРґРѕР»Р¶РёС‚СЊ##'..Value, 0x808080, BTNsize) then 
                         setAudioStreamState(Music['PlaySound'], as_action.RESUME)
                         Music['Pause'] = false 
                     end
                 else
-                    if imgui.ButtonHex(u8'Произвести##'..Value, 0x808080, BTNsize) then 
+                    if imgui.ButtonHex(u8'РџСЂРѕРёР·РІРµСЃС‚Рё##'..Value, 0x808080, BTNsize) then 
                         if Music['PlaySound'] ~= nil then setAudioStreamState(Music['PlaySound'], as_action.STOP) Music['PlaySound'] = nil end
                         Music['PlaySound'] = loadAudioStream('moonloader/config/PhoneApps/Music/'..Value..'.mp3')
                         setAudioStreamState(Music['PlaySound'], as_action.PLAY)
                         setAudioStreamVolume(Music['PlaySound'], 99)
                         Music['NowPlaying'] = Key 
                         Music['NowPlayingPL'] = Playlists[key]['Name']
-                        notf.addNotification('Сейчас играет: '..Value, 2, 2)
+                        notf.addNotification('РЎРµР№С‡Р°СЃ РёРіСЂР°РµС‚: '..Value, 2, 2)
                         Music['Pause'] = false 
                     end
                 end
@@ -803,88 +801,88 @@ function playlistmusic() -- Получение песен из плейлиста
 end
 
 local NamePlayList = imgui.ImBuffer('',32)
-function AddPlayList() -- Добавление плейлиста
-    imgui.InputText(u8'Имя плейлиста', NamePlayList)
-    if imgui.ButtonHex(u8('Сохранить Плейлист'), 0x808080, imgui.ImVec2(-0.1, 0)) then 
-        if NamePlayList.v == '' then return notf.addNotification('Введите уникальное имя плейлиста', 2, 3) end
+function AddPlayList() -- Р”РѕР±Р°РІР»РµРЅРёРµ РїР»РµР№Р»РёСЃС‚Р°
+    imgui.InputText(u8'РРјСЏ РїР»РµР№Р»РёСЃС‚Р°', NamePlayList)
+    if imgui.ButtonHex(u8('РЎРѕС…СЂР°РЅРёС‚СЊ РџР»РµР№Р»РёСЃС‚'), 0x808080, imgui.ImVec2(-0.1, 0)) then 
+        if NamePlayList.v == '' then return notf.addNotification('Р’РІРµРґРёС‚Рµ СѓРЅРёРєР°Р»СЊРЅРѕРµ РёРјСЏ РїР»РµР№Р»РёСЃС‚Р°', 2, 3) end
         for k,v in ipairs(Playlists) do
-            if Playlists[k]['Name'] == NamePlayList.v then return notf.addNotification('Введите уникальное имя плейлиста', 2, 3) end
+            if Playlists[k]['Name'] == NamePlayList.v then return notf.addNotification('Р’РІРµРґРёС‚Рµ СѓРЅРёРєР°Р»СЊРЅРѕРµ РёРјСЏ РїР»РµР№Р»РёСЃС‚Р°', 2, 3) end
         end
-        sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Плейлист сохранён{990000}!', -1) 
+        sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] РџР»РµР№Р»РёСЃС‚ СЃРѕС…СЂР°РЅС‘РЅ{990000}!', -1) 
         table.insert(Playlists, {['Name'] = NamePlayList.v, ['Tracks'] = {}})
     end
 end
 
 function AddToPlayList()
-    imgui.CenterText(u8'Список плейлистов:')
+    imgui.CenterText(u8'РЎРїРёСЃРѕРє РїР»РµР№Р»РёСЃС‚РѕРІ:')
     for Key, Value in ipairs(Playlists) do
         for Key2, Value2 in pairs(Playlists[Key]['Tracks']) do
             if Value2 == Music['AddName'] then goto metka2 end
         end
         if imgui.ButtonHex(Playlists[Key]['Name'], 0x808080, imgui.ImVec2(-0.1, 0)) then 
-            notf.addNotification('Добавлен новый трек в плейлист', 2, 2)
+            notf.addNotification('Р”РѕР±Р°РІР»РµРЅ РЅРѕРІС‹Р№ С‚СЂРµРє РІ РїР»РµР№Р»РёСЃС‚', 2, 2)
              table.insert(Playlists[Key]['Tracks'], Music['AddName']) 
         end
         ::metka2::
     end
 end
 
-function Gallery()  -- Галерея
+function Gallery()  -- Р“Р°Р»РµСЂРµСЏ
     imgui.SameLine()
-    if info[ImageNumber] ~= nil then -- Если массив с информацией о скриншотах не пустой
-        imgui.CenterText(info[ImageNumber]:get_name()) -- Вывод имени
+    if info[ImageNumber] ~= nil then -- Р•СЃР»Рё РјР°СЃСЃРёРІ СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ Рѕ СЃРєСЂРёРЅС€РѕС‚Р°С… РЅРµ РїСѓСЃС‚РѕР№
+        imgui.CenterText(info[ImageNumber]:get_name()) -- Р’С‹РІРѕРґ РёРјРµРЅРё
         local bColor = imgui.ImColor(255, 255, 255, 255):GetU32()
         imgui.Image(logo[ImageNumber], imgui.ImVec2(variables['other']['Screen_X']/1.5, variables['other']['Screen_Y']/1.5), imgui.ImVec2(0, 0), imgui.ImVec2(1, 1), imgui.ImColor(bColor):GetVec4()) -- PNG File
         imgui.NewLine()
-        imgui.SameLine(imgui.GetCenter()-90) -- Отступ
-        if ImageNumber > 1 then -- Изображение слева
+        imgui.SameLine(imgui.GetCenter()-90) -- РћС‚СЃС‚СѓРї
+        if ImageNumber > 1 then -- РР·РѕР±СЂР°Р¶РµРЅРёРµ СЃР»РµРІР°
             if imgui.ButtonHex('<--', 0x808080, imgui.ImVec2(60,20)) then
                 ImageNumber = ImageNumber - 1
             end
         else imgui.ButtonHex('##<--', 0x000000, imgui.ImVec2(60,20)) 
         end
         imgui.SameLine()
-        if imgui.ButtonHex(u8'Удалить', 0xff0000, imgui.ImVec2(60,20)) then -- Удаление скриншота
-            os.remove(info[ImageNumber]:get_path()..info[ImageNumber]:get_name()) -- Удаление
-            RefreshImg() -- Обновление
-            sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Удалено{990000}!', -1) 
+        if imgui.ButtonHex(u8'РЈРґР°Р»РёС‚СЊ', 0xff0000, imgui.ImVec2(60,20)) then -- РЈРґР°Р»РµРЅРёРµ СЃРєСЂРёРЅС€РѕС‚Р°
+            os.remove(info[ImageNumber]:get_path()..info[ImageNumber]:get_name()) -- РЈРґР°Р»РµРЅРёРµ
+            RefreshImg() -- РћР±РЅРѕРІР»РµРЅРёРµ
+            sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] РЈРґР°Р»РµРЅРѕ{990000}!', -1) 
         end
         imgui.SameLine()
-        if ImageNumber < #info then -- Изображение справа
+        if ImageNumber < #info then -- РР·РѕР±СЂР°Р¶РµРЅРёРµ СЃРїСЂР°РІР°
             if imgui.ButtonHex('-->', 0x808080, imgui.ImVec2(60,20)) then
                 ImageNumber = ImageNumber + 1
             end
         else imgui.ButtonHex('##-->', 0x000000, imgui.ImVec2(60,20)) 
         end
     else 
-        imgui.CenterText(u8'Папка скриншотов пустая')
+        imgui.CenterText(u8'РџР°РїРєР° СЃРєСЂРёРЅС€РѕС‚РѕРІ РїСѓСЃС‚Р°СЏ')
     end
 end
 
-function RefreshImg()   -- Удаление из массива удалённого файла
+function RefreshImg()   -- РЈРґР°Р»РµРЅРёРµ РёР· РјР°СЃСЃРёРІР° СѓРґР°Р»С‘РЅРЅРѕРіРѕ С„Р°Р№Р»Р°
     table.remove(info, ImageNumber)
     table.remove(logo, ImageNumber)
     ImageNumber = #info
 end
 
-function Information()  -- Информация
-    imgui.CenterText(u8'Текущая версия: '..thisScript().version )
-    imgui.TextColoredRGB('{FFFFFF}Используйте кнопку [{FF0000}L{FFFFFF}], чтобы включить/выключить imgui курсор мыши')
-    imgui.TextColoredRGB('{FFFFFF}Используйте сочитание клавиш [{FF0000}CTRL + 6{FFFFFF}], чтобы переключить песню назад')
-    imgui.TextColoredRGB('{FFFFFF}Используйте сочитание клавиш [{FF0000}CTRL + 7{FFFFFF}], чтобы возобновить/поставить песню на паузу')
-    imgui.TextColoredRGB('{FFFFFF}Используйте сочитание клавиш [{FF0000}CTRL + 8{FFFFFF}], чтобы переключить песню вперёд')
+function Information()  -- РРЅС„РѕСЂРјР°С†РёСЏ
+    imgui.CenterText(u8'РўРµРєСѓС‰Р°СЏ РІРµСЂСЃРёСЏ: '..thisScript().version )
+    imgui.TextColoredRGB('{FFFFFF}РСЃРїРѕР»СЊР·СѓР№С‚Рµ РєРЅРѕРїРєСѓ [{FF0000}L{FFFFFF}], С‡С‚РѕР±С‹ РІРєР»СЋС‡РёС‚СЊ/РІС‹РєР»СЋС‡РёС‚СЊ imgui РєСѓСЂСЃРѕСЂ РјС‹С€Рё')
+    imgui.TextColoredRGB('{FFFFFF}РСЃРїРѕР»СЊР·СѓР№С‚Рµ СЃРѕС‡РёС‚Р°РЅРёРµ РєР»Р°РІРёС€ [{FF0000}CTRL + 6{FFFFFF}], С‡С‚РѕР±С‹ РїРµСЂРµРєР»СЋС‡РёС‚СЊ РїРµСЃРЅСЋ РЅР°Р·Р°Рґ')
+    imgui.TextColoredRGB('{FFFFFF}РСЃРїРѕР»СЊР·СѓР№С‚Рµ СЃРѕС‡РёС‚Р°РЅРёРµ РєР»Р°РІРёС€ [{FF0000}CTRL + 7{FFFFFF}], С‡С‚РѕР±С‹ РІРѕР·РѕР±РЅРѕРІРёС‚СЊ/РїРѕСЃС‚Р°РІРёС‚СЊ РїРµСЃРЅСЋ РЅР° РїР°СѓР·Сѓ')
+    imgui.TextColoredRGB('{FFFFFF}РСЃРїРѕР»СЊР·СѓР№С‚Рµ СЃРѕС‡РёС‚Р°РЅРёРµ РєР»Р°РІРёС€ [{FF0000}CTRL + 8{FFFFFF}], С‡С‚РѕР±С‹ РїРµСЂРµРєР»СЋС‡РёС‚СЊ РїРµСЃРЅСЋ РІРїРµСЂС‘Рґ')
 end
 
-local NameOfDayOfWeek = {                                                                                                                   -- Название дней недели
-    'ПН',
-    'ВТ',
-    'СР',
-    'ЧТ',
-    'ПТ',
-    'СБ',
-    'ВС'
+local NameOfDayOfWeek = {                                                                                                                   -- РќР°Р·РІР°РЅРёРµ РґРЅРµР№ РЅРµРґРµР»Рё
+    'РџРќ',
+    'Р’Рў',
+    'РЎР ',
+    'Р§Рў',
+    'РџРў',
+    'РЎР‘',
+    'Р’РЎ'
 }
-local NumberOfDaysInMonth = {                                                                                                               -- Количество дней в месяце, кроме Февраля
+local NumberOfDaysInMonth = {                                                                                                               -- РљРѕР»РёС‡РµСЃС‚РІРѕ РґРЅРµР№ РІ РјРµСЃСЏС†Рµ, РєСЂРѕРјРµ Р¤РµРІСЂР°Р»СЏ
     ['1'] = 31,
     ['3'] = 31,
     ['4'] = 30, 
@@ -897,7 +895,7 @@ local NumberOfDaysInMonth = {                                                   
     ['11'] = 30,
     ['12'] = 31
 }
-function getDaysInMonth(month, year)                                                                                                        -- Получение дней в месяце по месяцу и году
+function getDaysInMonth(month, year)                                                                                                        -- РџРѕР»СѓС‡РµРЅРёРµ РґРЅРµР№ РІ РјРµСЃСЏС†Рµ РїРѕ РјРµСЃСЏС†Сѓ Рё РіРѕРґСѓ
     month = tostring(month)
     if NumberOfDaysInMonth[month] ~= nil then return NumberOfDaysInMonth[month] 
     elseif tonumber(month) == 2 then 
@@ -909,13 +907,13 @@ function getDaysInMonth(month, year)                                            
     end
 end
 function Calendar()
-    local Date = {                                                                                                                          -- Переменные
-        ['NowTime'] =  os.date("*t",os.time()),                                                                                             -- Получение таблицы текущего времени                                                                                                         -- Получение текущего года
+    local Date = {                                                                                                                          -- РџРµСЂРµРјРµРЅРЅС‹Рµ
+        ['NowTime'] =  os.date("*t",os.time()),                                                                                             -- РџРѕР»СѓС‡РµРЅРёРµ С‚Р°Р±Р»РёС†С‹ С‚РµРєСѓС‰РµРіРѕ РІСЂРµРјРµРЅРё                                                                                                         -- РџРѕР»СѓС‡РµРЅРёРµ С‚РµРєСѓС‰РµРіРѕ РіРѕРґР°
     }
-    local FirstDayOfMonth = tonumber(os.date("%w",os.time({ year = variables['imgui']['ChangeYear']['v'],                                   -- Получение недели первого дня месяца
+    local FirstDayOfMonth = tonumber(os.date("%w",os.time({ year = variables['imgui']['ChangeYear']['v'],                                   -- РџРѕР»СѓС‡РµРЅРёРµ РЅРµРґРµР»Рё РїРµСЂРІРѕРіРѕ РґРЅСЏ РјРµСЃСЏС†Р°
         month = variables['imgui']['ChangeMonth']['v'], day = 1}))) 
     imgui.SetCursorPos(imgui.ImVec2(30,115))
-    imgui.BeginChild("##CalendarChildSkip", imgui.ImVec2(80,30), true)                                                                      -- Месяц назад
+    imgui.BeginChild("##CalendarChildSkip", imgui.ImVec2(80,30), true)                                                                      -- РњРµСЃСЏС† РЅР°Р·Р°Рґ
     if imgui.ButtonHex('<<<', 0xdc143c, imgui.ImVec2(variables['imgui']['CalendarBtnSize']['x'], variables['imgui']['CalendarBtnSize']['y'])) then
         if variables['imgui']['ChangeMonth']['v']-1 < 1 then 
             variables['imgui']['ChangeMonth']['v'] = 12 
@@ -931,38 +929,38 @@ function Calendar()
     imgui.SameLine(variables['imgui']['WindowSize']['x']/4)      
     local MonthImgui = variables['imgui']['ChangeMonth']['v']
     if tonumber(MonthImgui) < 10 then MonthImgui = '0'..variables['imgui']['ChangeMonth']['v']  end                                                                      
-    imgui.CenterText(u8(tostring('Месяц: '..MonthImgui..' | Год: '..variables['imgui']['ChangeYear']['v'])))                                      -- Текущая дата
-    for Key, Value in ipairs(NameOfDayOfWeek) do                                                                                            -- Вывод дней недели
+    imgui.CenterText(u8(tostring('РњРµСЃСЏС†: '..MonthImgui..' | Р“РѕРґ: '..variables['imgui']['ChangeYear']['v'])))                                      -- РўРµРєСѓС‰Р°СЏ РґР°С‚Р°
+    for Key, Value in ipairs(NameOfDayOfWeek) do                                                                                            -- Р’С‹РІРѕРґ РґРЅРµР№ РЅРµРґРµР»Рё
         imgui.ButtonHex(u8(Value), 0x2E2626, imgui.ImVec2(variables['imgui']['CalendarBtnSize']['x'], variables['imgui']['CalendarBtnSize']['y']))
-        imgui.SameLine()                                                                                                                    -- Отступ
+        imgui.SameLine()                                                                                                                    -- РћС‚СЃС‚СѓРї
     end
-    imgui.NewLine()                                                                                                                         -- Перенос строки
-    for DaysCount = 1, getDaysInMonth(variables['imgui']['ChangeMonth']['v'], variables['imgui']['ChangeYear']['v']) do                     -- Для первого дня до количества дней в месяц
-        -- [ Переменнные ]
-        local DayOfWeek = tonumber(os.date("%w",os.time({ year=variables['imgui']['ChangeYear']['v'],                                       -- Получение дня недели по числу
+    imgui.NewLine()                                                                                                                         -- РџРµСЂРµРЅРѕСЃ СЃС‚СЂРѕРєРё
+    for DaysCount = 1, getDaysInMonth(variables['imgui']['ChangeMonth']['v'], variables['imgui']['ChangeYear']['v']) do                     -- Р”Р»СЏ РїРµСЂРІРѕРіРѕ РґРЅСЏ РґРѕ РєРѕР»РёС‡РµСЃС‚РІР° РґРЅРµР№ РІ РјРµСЃСЏС†
+        -- [ РџРµСЂРµРјРµРЅРЅРЅС‹Рµ ]
+        local DayOfWeek = tonumber(os.date("%w",os.time({ year=variables['imgui']['ChangeYear']['v'],                                       -- РџРѕР»СѓС‡РµРЅРёРµ РґРЅСЏ РЅРµРґРµР»Рё РїРѕ С‡РёСЃР»Сѓ
         month = variables['imgui']['ChangeMonth']['v'], day = DaysCount}))) + 1
-        local NowNameOfDay = tostring(DaysCount)                                                                                            -- Число 
-        -- [ Тело ]
-        if FirstDayOfMonth == 0 and DaysCount == 1 then                                                                                     -- Если первый день Воскресенье:
+        local NowNameOfDay = tostring(DaysCount)                                                                                            -- Р§РёСЃР»Рѕ 
+        -- [ РўРµР»Рѕ ]
+        if FirstDayOfMonth == 0 and DaysCount == 1 then                                                                                     -- Р•СЃР»Рё РїРµСЂРІС‹Р№ РґРµРЅСЊ Р’РѕСЃРєСЂРµСЃРµРЅСЊРµ:
             for DaysOfLastMonth = 1, 6 do                                                                                               
                 imgui.ButtonHex(' ',0x808080,imgui.ImVec2(variables['imgui']['CalendarBtnSize']['x'], variables['imgui']['CalendarBtnSize']['y']),1)                                                                       
                 imgui.SameLine()
             end
-        elseif DaysCount == 1 then                                                                                                          -- Если день первый то:
-            for DaysOfLastMonth = 0, 5 - math.abs(FirstDayOfMonth-7) do                                                                     -- Высчитывание дней с прошлого месяца [Цикл]
+        elseif DaysCount == 1 then                                                                                                          -- Р•СЃР»Рё РґРµРЅСЊ РїРµСЂРІС‹Р№ С‚Рѕ:
+            for DaysOfLastMonth = 0, 5 - math.abs(FirstDayOfMonth-7) do                                                                     -- Р’С‹СЃС‡РёС‚С‹РІР°РЅРёРµ РґРЅРµР№ СЃ РїСЂРѕС€Р»РѕРіРѕ РјРµСЃСЏС†Р° [Р¦РёРєР»]
                 imgui.ButtonHex(' ',0x808080,imgui.ImVec2(variables['imgui']['CalendarBtnSize']['x'], variables['imgui']['CalendarBtnSize']['y']),1)                                                                       
                 imgui.SameLine()
             end
         end
-        if DaysCount ~= Date['NowTime']['day'] or                                                                                           -- Если счётчик дня не равен сегодняшнему дню или равен, но другой месяц то:
+        if DaysCount ~= Date['NowTime']['day'] or                                                                                           -- Р•СЃР»Рё СЃС‡С‘С‚С‡РёРє РґРЅСЏ РЅРµ СЂР°РІРµРЅ СЃРµРіРѕРґРЅСЏС€РЅРµРјСѓ РґРЅСЋ РёР»Рё СЂР°РІРµРЅ, РЅРѕ РґСЂСѓРіРѕР№ РјРµСЃСЏС† С‚Рѕ:
             (variables['imgui']['ChangeMonth']['v'] ~= Date['NowTime']['month'] and DaysCount == Date['NowTime']['day']) or
             (DaysCount == Date['NowTime']['day'] and variables['imgui']['ChangeYear']['v'] ~= Date['NowTime']['year'])
         then                   
-            if imgui.ButtonHex(NowNameOfDay,0xbbbbbb,imgui.ImVec2(variables['imgui']['CalendarBtnSize']['x'],                               -- Выводим обычную кнопку
+            if imgui.ButtonHex(NowNameOfDay,0xbbbbbb,imgui.ImVec2(variables['imgui']['CalendarBtnSize']['x'],                               -- Р’С‹РІРѕРґРёРј РѕР±С‹С‡РЅСѓСЋ РєРЅРѕРїРєСѓ
                 variables['imgui']['CalendarBtnSize']['y'])) then
                 edit_Note(tostring(DaysCount..'.'..variables['imgui']['ChangeMonth']['v']..'.'..variables['imgui']['ChangeYear']['v']))
             end
-        elseif DaysCount == Date['NowTime']['day'] and variables['imgui']['ChangeYear']['v'] == Date['NowTime']['year'] then                -- Иначе выводим красную кнопку [Текущий день]
+        elseif DaysCount == Date['NowTime']['day'] and variables['imgui']['ChangeYear']['v'] == Date['NowTime']['year'] then                -- РРЅР°С‡Рµ РІС‹РІРѕРґРёРј РєСЂР°СЃРЅСѓСЋ РєРЅРѕРїРєСѓ [РўРµРєСѓС‰РёР№ РґРµРЅСЊ]
             if imgui.ButtonHex(NowNameOfDay,0xff0000, imgui.ImVec2(variables['imgui']['CalendarBtnSize']['x'], variables['imgui']['CalendarBtnSize']['y']), 1) then
                 edit_Note(tostring(DaysCount..'.'..variables['imgui']['ChangeMonth']['v']..'.'..variables['imgui']['ChangeYear']['v']))
             end
@@ -972,12 +970,12 @@ function Calendar()
                 imgui.Hint(u8(Value))
             end
         end
-    imgui.SameLine()                                                                                                                        -- Отступ на той же строке
-        if DayOfWeek == 1 then imgui.NewLine() end                                                                                          -- Если день недели = Воскресенье, перенос строки
+    imgui.SameLine()                                                                                                                        -- РћС‚СЃС‚СѓРї РЅР° С‚РѕР№ Р¶Рµ СЃС‚СЂРѕРєРµ
+        if DayOfWeek == 1 then imgui.NewLine() end                                                                                          -- Р•СЃР»Рё РґРµРЅСЊ РЅРµРґРµР»Рё = Р’РѕСЃРєСЂРµСЃРµРЅСЊРµ, РїРµСЂРµРЅРѕСЃ СЃС‚СЂРѕРєРё
     end
     imgui.EndChild()
     imgui.SetCursorPos(imgui.ImVec2(655,115))
-    imgui.BeginChild("##CalendarChildSkip2", imgui.ImVec2(80,30), true)                                                                     -- Месяц назад
+    imgui.BeginChild("##CalendarChildSkip2", imgui.ImVec2(80,30), true)                                                                     -- РњРµСЃСЏС† РЅР°Р·Р°Рґ
     if imgui.ButtonHex('>>>', 0xdc143c, imgui.ImVec2(variables['imgui']['CalendarBtnSize']['x'], variables['imgui']['CalendarBtnSize']['y'])) then
         if variables['imgui']['ChangeMonth']['v']+1 > 12 then 
             variables['imgui']['ChangeMonth']['v'] = 1 
@@ -989,33 +987,33 @@ function Calendar()
     imgui.EndChild()
 end
 
-function edit_Note(SelectedDate)                                                                                                            -- Включение окна редактирования записи дня в календаре
+function edit_Note(SelectedDate)                                                                                                            -- Р’РєР»СЋС‡РµРЅРёРµ РѕРєРЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ Р·Р°РїРёСЃРё РґРЅСЏ РІ РєР°Р»РµРЅРґР°СЂРµ
     if not variables['imgui']['EditNote'].v then
         variables['imgui']['EditNote'].v = not variables['imgui']['EditNote'].v
     end
     variables['imgui']['SelectedDate'] = SelectedDate
 end
 
-function Calculator()                                                                                                                       -- Функция калькулятора 
-    local sizeItem = 200                                                                                                                    -- Размер предметов
-    imgui.SetCursorPos(imgui.ImVec2(variables['imgui']['WindowSize']['x']/2-sizeItem/2,20))                                                 -- Положение курсора в окне Imgui 
-    imgui.PushItemWidth(sizeItem)                                                                                                           -- Установка длины объектам
-    imgui.InputText('',variables['imgui']['CalculatorText'])                                                                                -- Ввод примера
-    imgui.PopItemWidth()                                                                                                                    -- Конец установки длины объекта
-    imgui.Hint(u8('"+" - сложение\n"-" - вычитание\n"*" - умножение\n"/"- деление\n"^" - степень'))                                         -- Подсказка
-    imgui.SetCursorPos(imgui.ImVec2(variables['imgui']['WindowSize']['x']/2-sizeItem/3,45))                                                 -- Установка курсора в окне Imgui
-    if imgui.Button(u8'Вывести результат') then
-        local result = math.eval(variables['imgui']['CalculatorText']['v'])                                                                 -- Математическая функция для просчёта примера
+function Calculator()                                                                                                                       -- Р¤СѓРЅРєС†РёСЏ РєР°Р»СЊРєСѓР»СЏС‚РѕСЂР° 
+    local sizeItem = 200                                                                                                                    -- Р Р°Р·РјРµСЂ РїСЂРµРґРјРµС‚РѕРІ
+    imgui.SetCursorPos(imgui.ImVec2(variables['imgui']['WindowSize']['x']/2-sizeItem/2,20))                                                 -- РџРѕР»РѕР¶РµРЅРёРµ РєСѓСЂСЃРѕСЂР° РІ РѕРєРЅРµ Imgui 
+    imgui.PushItemWidth(sizeItem)                                                                                                           -- РЈСЃС‚Р°РЅРѕРІРєР° РґР»РёРЅС‹ РѕР±СЉРµРєС‚Р°Рј
+    imgui.InputText('',variables['imgui']['CalculatorText'])                                                                                -- Р’РІРѕРґ РїСЂРёРјРµСЂР°
+    imgui.PopItemWidth()                                                                                                                    -- РљРѕРЅРµС† СѓСЃС‚Р°РЅРѕРІРєРё РґР»РёРЅС‹ РѕР±СЉРµРєС‚Р°
+    imgui.Hint(u8('"+" - СЃР»РѕР¶РµРЅРёРµ\n"-" - РІС‹С‡РёС‚Р°РЅРёРµ\n"*" - СѓРјРЅРѕР¶РµРЅРёРµ\n"/"- РґРµР»РµРЅРёРµ\n"^" - СЃС‚РµРїРµРЅСЊ'))                                         -- РџРѕРґСЃРєР°Р·РєР°
+    imgui.SetCursorPos(imgui.ImVec2(variables['imgui']['WindowSize']['x']/2-sizeItem/3,45))                                                 -- РЈСЃС‚Р°РЅРѕРІРєР° РєСѓСЂСЃРѕСЂР° РІ РѕРєРЅРµ Imgui
+    if imgui.Button(u8'Р’С‹РІРµСЃС‚Рё СЂРµР·СѓР»СЊС‚Р°С‚') then
+        local result = math.eval(variables['imgui']['CalculatorText']['v'])                                                                 -- РњР°С‚РµРјР°С‚РёС‡РµСЃРєР°СЏ С„СѓРЅРєС†РёСЏ РґР»СЏ РїСЂРѕСЃС‡С‘С‚Р° РїСЂРёРјРµСЂР°
         if result ~= nil then
             if type(result) == 'string' or type(result) == 'number' then
-                sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Результат: {990000}'..result..'{FFFFFF}!',-1)                              -- Вывод результата
+                sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Р РµР·СѓР»СЊС‚Р°С‚: {990000}'..result..'{FFFFFF}!',-1)                              -- Р’С‹РІРѕРґ СЂРµР·СѓР»СЊС‚Р°С‚Р°
             end
         end
     end
 end
 local TSTi = imgui.ImBuffer('', 35000)
 
--- [ Загрузка изображений из base85 и png с папки]
+-- [ Р—Р°РіСЂСѓР·РєР° РёР·РѕР±СЂР°Р¶РµРЅРёР№ РёР· base85 Рё png СЃ РїР°РїРєРё]
 local hourline ="\x89\x50\x4E\x47\x0D\x0A\x1A\x0A\x00\x00\x00\x0D\x49\x48\x44\x52\x00\x00\x00\x96\x00\x00\x00\x96\x08\x06\x00\x00\x00\x3C\x01\x71\xE2\x00\x00\x01\x37\x69\x43\x43\x50\x41\x64\x6F\x62\x65\x20\x52\x47\x42\x20\x28\x31\x39\x39\x38\x29\x00\x00\x28\x91\x95\x8F\xBF\x4A\xC3\x50\x14\x87\xBF\x1B\x45\xC5\xA1\x56\x08\xE2\xE0\x70\x27\x51\x50\x6C\xD5\xC1\x8C\x49\x5B\x8A\x20\x58\xAB\x43\x92\xAD\x49\x43\x95\x62\x12\x6E\xAE\x7F\xFA\x10\x8E\x6E\x1D\x5C\xDC\x7D\x02\x27\x47\xC1\x41\xF1\x09\x7C\x03\xC5\xA9\x83\x43\x84\x0C\x05\x8B\xDF\xF4\x9D\xDF\x39\x1C\xCE\x01\xA3\x62\xD7\x9D\x86\x51\x86\xF3\x58\xAB\x76\xD3\x91\xAE\xE7\xCB\xD9\x17\x66\x98\x02\x80\x4E\x98\xA5\x76\xAB\x75\x00\x10\x27\x71\xC4\x18\xDF\xEF\x08\x80\xD7\x4D\xBB\xEE\x34\xC6\xFB\x7F\x32\x1F\xA6\x4A\x03\x23\x60\xBB\x1B\x65\x21\x88\x0A\xD0\xBF\xD2\xA9\x06\x31\x04\xCC\xA0\x9F\x6A\x10\x0F\x80\xA9\x4E\xDA\x35\x10\x4F\x40\xA9\x97\xFB\x1B\x50\x0A\x72\xFF\x00\x4A\xCA\xF5\x7C\x10\x5F\x80\xD9\x73\x3D\x1F\x8C\x39\xC0\x0C\x72\x5F\x01\x4C\x1D\x5D\x6B\x80\x5A\x92\x0E\xD4\x59\xEF\x54\xCB\xAA\x65\x59\xD2\xEE\x26\x41\x24\x8F\x07\x99\x8E\xCE\x33\xB9\x1F\x87\x89\x4A\x13\xD5\xD1\x51\x17\xC8\xEF\x03\x60\x31\x1F\x6C\x37\x1D\xB9\x56\xB5\xAC\xBD\xF5\x7F\xFE\x3D\x11\xD7\xF3\x65\x6E\x9F\x47\x08\x40\x2C\x3D\x17\x59\x41\x78\xA1\x2E\x7F\x55\x18\x3B\x93\xEB\x62\xC7\x70\x19\x0E\xEF\x61\x7A\x54\x64\xBB\x37\x70\xB7\x01\x0B\xB7\x45\xB6\x5A\x85\xF2\x16\x3C\x0E\x7F\x00\xC0\xC6\x4F\xFD\xF3\x53\x3F\xC8\x00\x00\x00\x09\x70\x48\x59\x73\x00\x00\x0B\x13\x00\x00\x0B\x13\x01\x00\x9A\x9C\x18\x00\x00\x05\xD1\x69\x54\x58\x74\x58\x4D\x4C\x3A\x63\x6F\x6D\x2E\x61\x64\x6F\x62\x65\x2E\x78\x6D\x70\x00\x00\x00\x00\x00\x3C\x3F\x78\x70\x61\x63\x6B\x65\x74\x20\x62\x65\x67\x69\x6E\x3D\x22\xEF\xBB\xBF\x22\x20\x69\x64\x3D\x22\x57\x35\x4D\x30\x4D\x70\x43\x65\x68\x69\x48\x7A\x72\x65\x53\x7A\x4E\x54\x63\x7A\x6B\x63\x39\x64\x22\x3F\x3E\x20\x3C\x78\x3A\x78\x6D\x70\x6D\x65\x74\x61\x20\x78\x6D\x6C\x6E\x73\x3A\x78\x3D\x22\x61\x64\x6F\x62\x65\x3A\x6E\x73\x3A\x6D\x65\x74\x61\x2F\x22\x20\x78\x3A\x78\x6D\x70\x74\x6B\x3D\x22\x41\x64\x6F\x62\x65\x20\x58\x4D\x50\x20\x43\x6F\x72\x65\x20\x35\x2E\x36\x2D\x63\x31\x34\x35\x20\x37\x39\x2E\x31\x36\x33\x34\x39\x39\x2C\x20\x32\x30\x31\x38\x2F\x30\x38\x2F\x31\x33\x2D\x31\x36\x3A\x34\x30\x3A\x32\x32\x20\x20\x20\x20\x20\x20\x20\x20\x22\x3E\x20\x3C\x72\x64\x66\x3A\x52\x44\x46\x20\x78\x6D\x6C\x6E\x73\x3A\x72\x64\x66\x3D\x22\x68\x74\x74\x70\x3A\x2F\x2F\x77\x77\x77\x2E\x77\x33\x2E\x6F\x72\x67\x2F\x31\x39\x39\x39\x2F\x30\x32\x2F\x32\x32\x2D\x72\x64\x66\x2D\x73\x79\x6E\x74\x61\x78\x2D\x6E\x73\x23\x22\x3E\x20\x3C\x72\x64\x66\x3A\x44\x65\x73\x63\x72\x69\x70\x74\x69\x6F\x6E\x20\x72\x64\x66\x3A\x61\x62\x6F\x75\x74\x3D\x22\x22\x20\x78\x6D\x6C\x6E\x73\x3A\x78\x6D\x70\x3D\x22\x68\x74\x74\x70\x3A\x2F\x2F\x6E\x73\x2E\x61\x64\x6F\x62\x65\x2E\x63\x6F\x6D\x2F\x78\x61\x70\x2F\x31\x2E\x30\x2F\x22\x20\x78\x6D\x6C\x6E\x73\x3A\x78\x6D\x70\x4D\x4D\x3D\x22\x68\x74\x74\x70\x3A\x2F\x2F\x6E\x73\x2E\x61\x64\x6F\x62\x65\x2E\x63\x6F\x6D\x2F\x78\x61\x70\x2F\x31\x2E\x30\x2F\x6D\x6D\x2F\x22\x20\x78\x6D\x6C\x6E\x73\x3A\x73\x74\x45\x76\x74\x3D\x22\x68\x74\x74\x70\x3A\x2F\x2F\x6E\x73\x2E\x61\x64\x6F\x62\x65\x2E\x63\x6F\x6D\x2F\x78\x61\x70\x2F\x31\x2E\x30\x2F\x73\x54\x79\x70\x65\x2F\x52\x65\x73\x6F\x75\x72\x63\x65\x45\x76\x65\x6E\x74\x23\x22\x20\x78\x6D\x6C\x6E\x73\x3A\x64\x63\x3D\x22\x68\x74\x74\x70\x3A\x2F\x2F\x70\x75\x72\x6C\x2E\x6F\x72\x67\x2F\x64\x63\x2F\x65\x6C\x65\x6D\x65\x6E\x74\x73\x2F\x31\x2E\x31\x2F\x22\x20\x78\x6D\x6C\x6E\x73\x3A\x70\x68\x6F\x74\x6F\x73\x68\x6F\x70\x3D\x22\x68\x74\x74\x70\x3A\x2F\x2F\x6E\x73\x2E\x61\x64\x6F\x62\x65\x2E\x63\x6F\x6D\x2F\x70\x68\x6F\x74\x6F\x73\x68\x6F\x70\x2F\x31\x2E\x30\x2F\x22\x20\x78\x6D\x70\x3A\x43\x72\x65\x61\x74\x6F\x72\x54\x6F\x6F\x6C\x3D\x22\x41\x64\x6F\x62\x65\x20\x50\x68\x6F\x74\x6F\x73\x68\x6F\x70\x20\x43\x43\x20\x32\x30\x31\x39\x20\x28\x57\x69\x6E\x64\x6F\x77\x73\x29\x22\x20\x78\x6D\x70\x3A\x43\x72\x65\x61\x74\x65\x44\x61\x74\x65\x3D\x22\x32\x30\x32\x31\x2D\x30\x31\x2D\x32\x33\x54\x32\x30\x3A\x31\x39\x3A\x33\x35\x2B\x30\x33\x3A\x30\x30\x22\x20\x78\x6D\x70\x3A\x4D\x65\x74\x61\x64\x61\x74\x61\x44\x61\x74\x65\x3D\x22\x32\x30\x32\x31\x2D\x30\x31\x2D\x32\x33\x54\x32\x30\x3A\x31\x39\x3A\x33\x35\x2B\x30\x33\x3A\x30\x30\x22\x20\x78\x6D\x70\x3A\x4D\x6F\x64\x69\x66\x79\x44\x61\x74\x65\x3D\x22\x32\x30\x32\x31\x2D\x30\x31\x2D\x32\x33\x54\x32\x30\x3A\x31\x39\x3A\x33\x35\x2B\x30\x33\x3A\x30\x30\x22\x20\x78\x6D\x70\x4D\x4D\x3A\x49\x6E\x73\x74\x61\x6E\x63\x65\x49\x44\x3D\x22\x78\x6D\x70\x2E\x69\x69\x64\x3A\x34\x61\x34\x35\x31\x65\x63\x66\x2D\x32\x31\x64\x62\x2D\x66\x32\x34\x63\x2D\x39\x64\x35\x39\x2D\x63\x66\x33\x63\x31\x37\x38\x31\x33\x62\x64\x33\x22\x20\x78\x6D\x70\x4D\x4D\x3A\x44\x6F\x63\x75\x6D\x65\x6E\x74\x49\x44\x3D\x22\x61\x64\x6F\x62\x65\x3A\x64\x6F\x63\x69\x64\x3A\x70\x68\x6F\x74\x6F\x73\x68\x6F\x70\x3A\x31\x66\x30\x61\x33\x66\x33\x64\x2D\x65\x37\x30\x36\x2D\x31\x63\x34\x32\x2D\x61\x34\x63\x35\x2D\x31\x61\x36\x66\x35\x66\x30\x31\x38\x39\x65\x39\x22\x20\x78\x6D\x70\x4D\x4D\x3A\x4F\x72\x69\x67\x69\x6E\x61\x6C\x44\x6F\x63\x75\x6D\x65\x6E\x74\x49\x44\x3D\x22\x78\x6D\x70\x2E\x64\x69\x64\x3A\x66\x64\x39\x32\x39\x36\x63\x36\x2D\x39\x39\x32\x66\x2D\x31\x37\x34\x30\x2D\x38\x62\x61\x39\x2D\x64\x30\x38\x64\x33\x37\x66\x38\x61\x36\x35\x31\x22\x20\x64\x63\x3A\x66\x6F\x72\x6D\x61\x74\x3D\x22\x69\x6D\x61\x67\x65\x2F\x70\x6E\x67\x22\x20\x70\x68\x6F\x74\x6F\x73\x68\x6F\x70\x3A\x43\x6F\x6C\x6F\x72\x4D\x6F\x64\x65\x3D\x22\x33\x22\x3E\x20\x3C\x78\x6D\x70\x4D\x4D\x3A\x48\x69\x73\x74\x6F\x72\x79\x3E\x20\x3C\x72\x64\x66\x3A\x53\x65\x71\x3E\x20\x3C\x72\x64\x66\x3A\x6C\x69\x20\x73\x74\x45\x76\x74\x3A\x61\x63\x74\x69\x6F\x6E\x3D\x22\x63\x72\x65\x61\x74\x65\x64\x22\x20\x73\x74\x45\x76\x74\x3A\x69\x6E\x73\x74\x61\x6E\x63\x65\x49\x44\x3D\x22\x78\x6D\x70\x2E\x69\x69\x64\x3A\x66\x64\x39\x32\x39\x36\x63\x36\x2D\x39\x39\x32\x66\x2D\x31\x37\x34\x30\x2D\x38\x62\x61\x39\x2D\x64\x30\x38\x64\x33\x37\x66\x38\x61\x36\x35\x31\x22\x20\x73\x74\x45\x76\x74\x3A\x77\x68\x65\x6E\x3D\x22\x32\x30\x32\x31\x2D\x30\x31\x2D\x32\x33\x54\x32\x30\x3A\x31\x39\x3A\x33\x35\x2B\x30\x33\x3A\x30\x30\x22\x20\x73\x74\x45\x76\x74\x3A\x73\x6F\x66\x74\x77\x61\x72\x65\x41\x67\x65\x6E\x74\x3D\x22\x41\x64\x6F\x62\x65\x20\x50\x68\x6F\x74\x6F\x73\x68\x6F\x70\x20\x43\x43\x20\x32\x30\x31\x39\x20\x28\x57\x69\x6E\x64\x6F\x77\x73\x29\x22\x2F\x3E\x20\x3C\x72\x64\x66\x3A\x6C\x69\x20\x73\x74\x45\x76\x74\x3A\x61\x63\x74\x69\x6F\x6E\x3D\x22\x73\x61\x76\x65\x64\x22\x20\x73\x74\x45\x76\x74\x3A\x69\x6E\x73\x74\x61\x6E\x63\x65\x49\x44\x3D\x22\x78\x6D\x70\x2E\x69\x69\x64\x3A\x34\x61\x34\x35\x31\x65\x63\x66\x2D\x32\x31\x64\x62\x2D\x66\x32\x34\x63\x2D\x39\x64\x35\x39\x2D\x63\x66\x33\x63\x31\x37\x38\x31\x33\x62\x64\x33\x22\x20\x73\x74\x45\x76\x74\x3A\x77\x68\x65\x6E\x3D\x22\x32\x30\x32\x31\x2D\x30\x31\x2D\x32\x33\x54\x32\x30\x3A\x31\x39\x3A\x33\x35\x2B\x30\x33\x3A\x30\x30\x22\x20\x73\x74\x45\x76\x74\x3A\x73\x6F\x66\x74\x77\x61\x72\x65\x41\x67\x65\x6E\x74\x3D\x22\x41\x64\x6F\x62\x65\x20\x50\x68\x6F\x74\x6F\x73\x68\x6F\x70\x20\x43\x43\x20\x32\x30\x31\x39\x20\x28\x57\x69\x6E\x64\x6F\x77\x73\x29\x22\x20\x73\x74\x45\x76\x74\x3A\x63\x68\x61\x6E\x67\x65\x64\x3D\x22\x2F\x22\x2F\x3E\x20\x3C\x2F\x72\x64\x66\x3A\x53\x65\x71\x3E\x20\x3C\x2F\x78\x6D\x70\x4D\x4D\x3A\x48\x69\x73\x74\x6F\x72\x79\x3E\x20\x3C\x2F\x72\x64\x66\x3A\x44\x65\x73\x63\x72\x69\x70\x74\x69\x6F\x6E\x3E\x20\x3C\x2F\x72\x64\x66\x3A\x52\x44\x46\x3E\x20\x3C\x2F\x78\x3A\x78\x6D\x70\x6D\x65\x74\x61\x3E\x20\x3C\x3F\x78\x70\x61\x63\x6B\x65\x74\x20\x65\x6E\x64\x3D\x22\x72\x22\x3F\x3E\x79\xCA\x50\x2C\x00\x00\x01\xEB\x49\x44\x41\x54\x78\x9C\xED\xD8\xC1\x4E\x83\x40\x14\x40\xD1\x87\x7F\x8B\x1F\x44\x3F\x17\x37\x5D\xB6\x05\xA3\xD7\x5A\x3D\x67\x03\x99\xD9\xBC\x4C\x6E\x26\x81\x65\xDF\xF7\x81\xEF\xF6\xF6\xEC\x01\xF8\x9B\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x75\xDE\x36\x33\xFB\xF5\xC9\x01\x61\x9D\xB3\xCD\xCC\x7A\x7D\x5F\x47\x5C\x87\x16\xFF\xB1\x4E\xB9\x75\x48\xCB\x8F\x4F\xF1\x42\xDC\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x45\x42\x58\x24\x84\x75\x6C\xFB\xE4\x3A\x23\xAC\x23\xDB\xCC\xAC\x77\xF6\xD6\x11\xD7\x5D\xCB\xBE\xEF\xCF\x9E\xE1\x37\x3B\x73\x38\x4B\x3E\xC5\x0B\x72\x63\x91\x10\x16\x09\x61\x3D\x76\xF9\xE2\xFE\xBF\x25\xAC\xC7\xDE\xE7\x7E\x3C\x97\xEB\x3E\x37\x08\xEB\xD8\xAD\xB8\x44\x75\xC0\x57\x21\x09\x37\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x09\x61\x91\x10\x16\x89\x0F\x90\x62\x1B\xA2\x39\x50\x80\x4D\x00\x00\x00\x00\x49\x45\x4E\x44\xAE\x42\x60\x82"
 local hourlineimgui = imgui.CreateTextureFromMemory(memory.strptr(hourline), #hourline)
 local minuteline = "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A\x00\x00\x00\x0D\x49\x48\x44\x52\x00\x00\x00\xDC\x00\x00\x00\xDC\x08\x06\x00\x00\x00\x1B\x5A\xCF\x81\x00\x00\x00\x09\x70\x48\x59\x73\x00\x00\x0B\x13\x00\x00\x0B\x13\x01\x00\x9A\x9C\x18\x00\x00\x00\x20\x63\x48\x52\x4D\x00\x00\x7A\x25\x00\x00\x80\x83\x00\x00\xF9\xFF\x00\x00\x80\xE9\x00\x00\x75\x30\x00\x00\xEA\x60\x00\x00\x3A\x98\x00\x00\x17\x6F\x92\x5F\xC5\x46\x00\x00\x03\x25\x49\x44\x41\x54\x78\xDA\xEC\xD9\x41\x8B\x4D\x61\x1C\xC0\xE1\xDF\x1D\x8A\xB2\x10\x16\x63\x33\x16\x92\xAC\x06\xA5\xAC\x58\xD0\x2C\xED\x94\x1A\xE4\x43\xF8\x1C\xBE\x80\xB2\x60\x67\xE1\x13\x10\x59\xC9\x52\xD9\xD8\x59\x88\x58\x8C\x62\x86\x14\x5D\x0B\x67\x4A\x53\x26\x33\x26\xCE\xE4\x79\xEA\x76\xEB\xDC\xF7\x6E\xFE\xA7\xDF\x3D\xEF\x3D\x67\x32\x9D\x4E\x03\xFE\x8E\x19\x23\x00\xC1\x81\xE0\x00\xC1\x81\xE0\x00\xC1\x81\xE0\x40\x70\x8C\xD1\xA4\x3A\x5F\xDD\xAD\xDE\x54\xCF\xAA\xEB\xD5\xAC\xD1\x08\x0E\x58\x63\xA7\x11\x6C\x1B\xBB\xAA\x33\xD5\xB5\x6A\xA1\xDA\x57\x1D\xAC\x16\xAB\xAF\xD5\xBD\xEA\x95\x31\x09\x8E\xAD\x71\xA0\xBA\x58\x5D\xA8\xF6\xFE\x74\xFC\x64\x35\xAD\x5E\x0A\xCE\x96\x92\xAD\xB3\xA7\x9A\x5F\x13\xDB\xEA\xFF\xBA\x13\xD5\x9C\x11\x09\x8E\xAD\x33\x59\xE7\x7C\xCD\x38\x97\x82\x03\x04\x07\x82\x03\xC1\x01\x82\x03\xC1\x01\x82\x03\xC1\x81\xE0\x00\xC1\x81\xE0\x00\xC1\x81\xE0\x00\xC1\x81\xE0\x40\x70\x80\xE0\x40\x70\x80\xE0\x40\x70\x20\x38\x40\x70\x20\x38\x40\x70\x20\x38\x40\x70\x20\x38\x10\x1C\x20\x38\x10\x1C\x20\x38\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x04\x07\x08\x0E\x04\x07\x08\x0E\x04\x07\x08\x0E\x04\x07\x82\x03\x04\x07\x82\x03\x04\x07\x82\x03\xC1\x01\x82\x03\xC1\x01\x82\x03\xC1\x01\x82\x03\xC1\x81\xE0\x00\xC1\x81\xE0\x00\xC1\x81\xE0\x40\x70\x80\xE0\x40\x70\x80\xE0\x40\x70\x80\xE0\x40\x70\x20\x38\x40\x70\x20\x38\x40\x70\x20\x38\x10\x1C\x20\x38\x10\x1C\x20\x38\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x04\x07\x08\x0E\x04\x07\x08\x0E\x04\x07\x82\x03\x04\xC7\x60\x77\x75\xBC\xDA\xFB\x8B\xCF\x27\xD5\x91\xEA\xB0\x51\x8D\xDB\x4E\x23\x18\xBD\xD9\xEA\x54\x75\xB5\x9A\x5B\x67\xDD\x42\xF5\xAE\xBA\x53\x7D\xA9\xDE\x1A\x9D\xE0\xD8\xB8\x2B\xD5\xD9\xEA\x5C\xB5\x67\x9D\x75\xC7\xAA\xCB\xC3\xAE\x65\xA5\xBA\x61\x74\xE3\x33\x99\x4E\xA7\xA6\x30\x6E\x4F\xAB\xF9\x61\x5B\xF9\x3B\x9E\x57\x9F\xAA\xD3\x46\x27\x38\x36\x6E\xA9\xDA\xB7\x81\xF5\x5F\x86\xE0\xF6\x1B\xDD\xF8\xB8\x69\x02\x82\x03\xC1\xF1\x6F\x2C\x6F\x62\xFD\xB2\xB1\x09\x8E\xCD\x79\x58\xBD\xF8\xCD\xB5\x1F\xAB\x47\xC3\x77\x18\x21\x8F\x05\xC6\xEF\xD6\x10\xDC\x95\x7E\xDC\xFA\xFF\xD5\x8F\xE4\xFB\xEA\xFE\xB0\xFE\xB3\xB1\x09\x8E\xCD\x79\x52\xBD\x1E\xCE\xD5\xE2\x10\xDD\x5A\x1F\xAA\x07\xD5\xED\xEA\x71\xF5\xCD\xD8\xC6\xC9\x63\x81\xED\xE3\x50\x75\xAD\xBA\x54\x1D\xAD\x76\x0C\x57\xBB\xA5\x61\x0B\x79\x73\xD8\x4E\x7E\x35\x2A\x57\x38\xFE\xDC\xEA\xF3\xB5\x95\xE1\x7D\x35\xB8\x95\xE1\xF5\x59\x6C\xAE\x70\xC0\x4F\xDC\xA5\x04\xC1\x81\xE0\x00\xC1\x81\xE0\x00\xC1\x81\xE0\x40\x70\x80\xE0\x40\x70\x80\xE0\x40\x70\x20\x38\x40\x70\x20\x38\x40\x70\x20\x38\x40\x70\x20\x38\x10\x1C\x20\x38\x10\x1C\x20\x38\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x04\x07\x08\x0E\x04\x07\x08\x0E\x04\x07\x82\x03\x04\x07\x82\x03\x04\x07\x82\x03\x04\x07\x82\x03\xC1\x01\x82\x03\xC1\x01\x82\x03\xC1\x81\xE0\x00\xC1\x81\xE0\x00\xC1\x81\xE0\x40\x70\x80\xE0\x40\x70\x80\xE0\x40\x70\x80\xE0\x40\x70\x20\x38\x40\x70\x20\x38\x40\x70\x20\x38\x10\x1C\x20\x38\x10\x1C\x20\x38\x10\x1C\x20\x38\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x10\x1C\x08\x0E\x04\x07\x08\x0E\x04\x07\x08\x0E\x04\x07\x08\x0E\x04\x07\x82\x03\x04\x07\x82\x03\x04\x07\x82\x03\xC1\x01\x82\x03\xC1\x01\x82\x03\xC1\x81\xE0\x00\xC1\x81\xE0\x00\xC1\x81\xE0\x00\xC1\x81\xE0\xE0\xBF\xF0\x1D\x00\x00\xFF\xFF\x03\x00\xA8\x79\x49\x3A\x89\xCB\xC2\xFC\x00\x00\x00\x00\x49\x45\x4E\x44\xAE\x42\x60\x82"
@@ -1026,9 +1024,9 @@ function Clock()
     local p = imgui.GetCursorScreenPos()
     local angle = 6.25
     local datetime = os.date("*t",os.time())
-    local DayOfWeek = tonumber(os.date("%w",os.time({ year=datetime['year'],                                                                -- Получение дня недели по числу
+    local DayOfWeek = tonumber(os.date("%w",os.time({ year=datetime['year'],                                                                -- РџРѕР»СѓС‡РµРЅРёРµ РґРЅСЏ РЅРµРґРµР»Рё РїРѕ С‡РёСЃР»Сѓ
         month = datetime['month'], day = datetime['day']})))
-    local NowNameOfDay = NameOfDayOfWeek[DayOfWeek]                                                                                         -- Получение имени дня
+    local NowNameOfDay = NameOfDayOfWeek[DayOfWeek]                                                                                         -- РџРѕР»СѓС‡РµРЅРёРµ РёРјРµРЅРё РґРЅСЏ
     if DayOfWeek == 0 then DayOfWeek = 7 end
     imgui.SetCursorPos(imgui.ImVec2(variables['imgui']['WindowSize']['x']/2-120/2,1))            
     imgui.BeginChild("##Clock", imgui.ImVec2(150,50), true)  
@@ -1044,18 +1042,18 @@ function Clock()
             imgui.Text(u8(tostring(NameOfDayOfWeek[DayOfWeek]..', '..datetime['day'] ..' '..os.date('%B'))))
         imgui.PopFont()
     imgui.EndChild()
-    ImageRotated(clocklineimgui, imgui.ImVec2(p.x + 390.0, p.y + 170.0), imgui.ImVec2(248, 350.8), 0, 0xFFFFFFFF)                           -- Циферблат
-    ImageRotated(hourlineimgui, imgui.ImVec2(p.x + 390.0, p.y + 170.0), imgui.ImVec2(100, 100), angle/12*datetime['hour'], 0xFFFFFFFF)      -- Часы
-    ImageRotated(minutelineimgui, imgui.ImVec2(p.x + 390.0, p.y + 170.0), imgui.ImVec2(120, 120), angle/60*datetime['min'], 0xFFFFFFFF)     -- Минуты
-    ImageRotated(secondlineimgui, imgui.ImVec2(p.x + 390.0, p.y + 170.0), imgui.ImVec2(120, 120), angle/60*datetime['sec'], 0xFFFFFFFF)     -- Секунды
+    ImageRotated(clocklineimgui, imgui.ImVec2(p.x + 390.0, p.y + 170.0), imgui.ImVec2(248, 350.8), 0, 0xFFFFFFFF)                           -- Р¦РёС„РµСЂР±Р»Р°С‚
+    ImageRotated(hourlineimgui, imgui.ImVec2(p.x + 390.0, p.y + 170.0), imgui.ImVec2(100, 100), angle/12*datetime['hour'], 0xFFFFFFFF)      -- Р§Р°СЃС‹
+    ImageRotated(minutelineimgui, imgui.ImVec2(p.x + 390.0, p.y + 170.0), imgui.ImVec2(120, 120), angle/60*datetime['min'], 0xFFFFFFFF)     -- РњРёРЅСѓС‚С‹
+    ImageRotated(secondlineimgui, imgui.ImVec2(p.x + 390.0, p.y + 170.0), imgui.ImVec2(120, 120), angle/60*datetime['sec'], 0xFFFFFFFF)     -- РЎРµРєСѓРЅРґС‹
     imgui.SetCursorPos(imgui.ImVec2(10,10))
-    if imgui.ButtonHex(u8('Будильник'), 0x808080, imgui.ImVec2(100,20)) then variables['imgui']['Alarm'].v = not variables['imgui']['Alarm'].v end
-    if imgui.ButtonHex(u8('Таймер'), 0x808080, imgui.ImVec2(100,20)) then variables['imgui']['Timer'].v = not variables['imgui']['Timer'].v end
-    if imgui.ButtonHex(u8('Секундомер'), 0x808080, imgui.ImVec2(100,20)) then variables['imgui']['StopWatch'].v = not variables['imgui']['StopWatch'].v end
+    if imgui.ButtonHex(u8('Р‘СѓРґРёР»СЊРЅРёРє'), 0x808080, imgui.ImVec2(100,20)) then variables['imgui']['Alarm'].v = not variables['imgui']['Alarm'].v end
+    if imgui.ButtonHex(u8('РўР°Р№РјРµСЂ'), 0x808080, imgui.ImVec2(100,20)) then variables['imgui']['Timer'].v = not variables['imgui']['Timer'].v end
+    if imgui.ButtonHex(u8('РЎРµРєСѓРЅРґРѕРјРµСЂ'), 0x808080, imgui.ImVec2(100,20)) then variables['imgui']['StopWatch'].v = not variables['imgui']['StopWatch'].v end
 end
 
-function Alarm() -- Будильник
-    if imgui.ButtonHex(u8('Добавить будильник'), 0x808080, imgui.ImVec2(-0.1, 0)) then variables['imgui']['AddAlarm'].v = not variables['imgui']['AddAlarm'].v end
+function Alarm() -- Р‘СѓРґРёР»СЊРЅРёРє
+    if imgui.ButtonHex(u8('Р”РѕР±Р°РІРёС‚СЊ Р±СѓРґРёР»СЊРЅРёРє'), 0x808080, imgui.ImVec2(-0.1, 0)) then variables['imgui']['AddAlarm'].v = not variables['imgui']['AddAlarm'].v end
     imgui.Separator()
     if NoteInAlarm ~= nil then
         for Key, Value in pairs(NoteInAlarm) do
@@ -1066,11 +1064,11 @@ function Alarm() -- Будильник
                 if minute < 10 then minute = '0'..minute end
                 imgui.ButtonHex(u8(hour..':'..minute), NoteInAlarm[Key]['active'] and 0x4169E1 or 0x808080, imgui.ImVec2(100,20))
                 imgui.SameLine()
-                if imadd.ToggleButton("##"..Key,  imgui.ImBool(NoteInAlarm[Key]['active'])) then -- Включен или выключен
+                if imadd.ToggleButton("##"..Key,  imgui.ImBool(NoteInAlarm[Key]['active'])) then -- Р’РєР»СЋС‡РµРЅ РёР»Рё РІС‹РєР»СЋС‡РµРЅ
                     NoteInAlarm[Key]['active'] = not NoteInAlarm[Key]['active']
                 end
                 imgui.SameLine()
-                if imgui.ButtonHex(u8('Удалить'), 0xff0000, imgui.ImVec2(70,20)) then NoteInAlarm[Key] = nil end -- Удаление будильника
+                if imgui.ButtonHex(u8('РЈРґР°Р»РёС‚СЊ'), 0xff0000, imgui.ImVec2(70,20)) then NoteInAlarm[Key] = nil end -- РЈРґР°Р»РµРЅРёРµ Р±СѓРґРёР»СЊРЅРёРєР°
                 if NoteInAlarm[Key] ~= nil then
                     for Keys, Values in pairs(NoteInAlarm[Key]['days']) do
                         if Values == true then 
@@ -1084,27 +1082,27 @@ function Alarm() -- Будильник
     end
 end
 
-function AddAlarm() -- Добавление будильника с настройками (Время, дни недели)
-    imgui.SliderInt(u8"Час:", variables['imgui']['Hour'], 1, 23) 
-    imgui.SliderInt(u8"Минуты:", variables['imgui']['Minute'], 1, 59)
+function AddAlarm() -- Р”РѕР±Р°РІР»РµРЅРёРµ Р±СѓРґРёР»СЊРЅРёРєР° СЃ РЅР°СЃС‚СЂРѕР№РєР°РјРё (Р’СЂРµРјСЏ, РґРЅРё РЅРµРґРµР»Рё)
+    imgui.SliderInt(u8"Р§Р°СЃ:", variables['imgui']['Hour'], 1, 23) 
+    imgui.SliderInt(u8"РњРёРЅСѓС‚С‹:", variables['imgui']['Minute'], 1, 59)
     for Key, Value in ipairs(ActiveDays['name']) do
         imgui.Text(u8(Value))
         imgui.SameLine()
         imadd.ToggleButton("##"..Key..'Add', ActiveDays['imgui'][Key]) 
         if Key ~= 4 and Key < 7 then imgui.SameLine() imgui.Text('   ') imgui.SameLine() end
     end
-    if imgui.ButtonHex(u8('Сохранить будильник'), 0x808080, imgui.ImVec2(-0.1, 0)) then 
-        sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Будильник сохранён{990000}!', -1) 
+    if imgui.ButtonHex(u8('РЎРѕС…СЂР°РЅРёС‚СЊ Р±СѓРґРёР»СЊРЅРёРє'), 0x808080, imgui.ImVec2(-0.1, 0)) then 
+        sampAddChatMessage('[{FF9900}Phone Apps{FFFFFF}] Р‘СѓРґРёР»СЊРЅРёРє СЃРѕС…СЂР°РЅС‘РЅ{990000}!', -1) 
         table.insert( NoteInAlarm, {
             ['active'] = false,
             ['days'] = {
-                ['ПН'] = ActiveDays['imgui'][1].v, 
-                ['ВТ'] = ActiveDays['imgui'][2].v, 
-                ['СР'] = ActiveDays['imgui'][3].v, 
-                ['ЧТ'] = ActiveDays['imgui'][4].v, 
-                ['ПТ'] = ActiveDays['imgui'][5].v, 
-                ['СБ'] = ActiveDays['imgui'][6].v, 
-                ['ВС'] = ActiveDays['imgui'][7].v, 
+                ['РџРќ'] = ActiveDays['imgui'][1].v, 
+                ['Р’Рў'] = ActiveDays['imgui'][2].v, 
+                ['РЎР '] = ActiveDays['imgui'][3].v, 
+                ['Р§Рў'] = ActiveDays['imgui'][4].v, 
+                ['РџРў'] = ActiveDays['imgui'][5].v, 
+                ['РЎР‘'] = ActiveDays['imgui'][6].v, 
+                ['Р’РЎ'] = ActiveDays['imgui'][7].v, 
             },
             ['hour'] = variables['imgui']['Hour'].v,
             ['minute'] = variables['imgui']['Minute'].v
@@ -1120,7 +1118,7 @@ function onScriptTerminate(script, quitGame)
         SaveJSON('music', Playlists)  
 	end
 end  
--- [ Доп.функции ]
+-- [ Р”РѕРї.С„СѓРЅРєС†РёРё ]
 function imgui.Hint(text, delay)
     if imgui.IsItemHovered() then
         if go_hint == nil then go_hint = os.clock() + (delay and delay or 0.0) end
@@ -1355,12 +1353,12 @@ function imgui.CloseButton(rad, bool)
     cbcolor = imgui.IsItemHovered() and 0xFF707070 or nil
 end
 
-function SaveJSON(name, table)                                                                                           -- Сохранение JSON файла
-    encodedTable = encodeJson(table)                                                                                    -- превращаем наш Lua массив в JSON
+function SaveJSON(name, table)                                                                                           -- РЎРѕС…СЂР°РЅРµРЅРёРµ JSON С„Р°Р№Р»Р°
+    encodedTable = encodeJson(table)                                                                                    -- РїСЂРµРІСЂР°С‰Р°РµРј РЅР°С€ Lua РјР°СЃСЃРёРІ РІ JSON
     local file = io.open(getWorkingDirectory()..'/config/PhoneApps/'..name..'.json', "w")
-    file:write(encodedTable)                                                                                            -- Записываем нашу таблицу
-    file:flush()                                                                                                        -- Сохраняем
-    file:close()                                                                                                        -- Закрываем
+    file:write(encodedTable)                                                                                            -- Р—Р°РїРёСЃС‹РІР°РµРј РЅР°С€Сѓ С‚Р°Р±Р»РёС†Сѓ
+    file:flush()                                                                                                        -- РЎРѕС…СЂР°РЅСЏРµРј
+    file:close()                                                                                                        -- Р—Р°РєСЂС‹РІР°РµРј
 end
 
 function math.eval(str)
